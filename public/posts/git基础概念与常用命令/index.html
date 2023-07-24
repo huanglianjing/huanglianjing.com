@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Git基础概念与常用命令 | My New Hugo Site</title>
+<meta name="keywords" content="Git, 命令">
+<meta name="description" content="1. 基础概念 仓库
+每个项目整个文件夹称为一个仓库repository，仓库中包含零到多个文件，仓库的改动由链状的提交commit所表示，这些提交又分布在不同的分支branch上。每个仓库都有一个起始默认的仓库master/main，然后新建和删除不同的分支，分支之间可以相互合并，以达到多人共同开发同一个项目。
+HEAD表示当前指向的提交。
+远程仓库
+origin表示远程仓库，每个仓库包含本地仓库和对应的远程仓库，例如对应为dev和origin/dev，可以从远程仓库分支拉取更新到本地，以及将本地提交的修改推送到远程分支。
+1.1 文件状态 对于Git项目，仓库文件夹中的文件有如下几种状态：
+untracked/未追踪
+未追踪的文件就是临时存在当前仓库文件夹中，但是并未包含在仓库中的文件，一般是新增的准备加入仓库中的文件，或是产生的日志文件等临时文件。
+未追踪的文件如果不想加到仓库中，而且也不想通过 git status 看到，可以将文件规则加到.gitignore文件中。
+如果是需要加到仓库中的文件，通过 git add 可以将文件变为暂存状态，然后就可以提交到仓库中。
+unmodified/未修改
+存在仓库中的所有文件，如果本地文件未被修改，则是未修改的状态。
+通过 git status 无法看到未修改的文件，但是可以看到哪些文件是属于已修改和暂存状态的。
+modified/已修改
+存在仓库中的文件，修改后，就会变成已修改状态，已修改的文件所在称为工作区。
+通过 git add 可以将已修改的文件转成暂存状态，而 git checkout &ndash; file 则将文件修改撤销，变为未修改状态。
+staged/暂存
+仓库文件转位暂存状态后，就是可以准备提交的状态了，暂存的文件所处暂存区。
+通过 git commit 可以将所有暂存的文件提交，文件再次变为未修改状态，而 git reset HEAD file 则会将暂存的文件退回到已修改状态。
+从上图中可以看到仓库文件的状态流转。不属于仓库的文件是 untracked 状态，属于仓库的文件是 unmodified 状态，作出更改后变为modified状态，将这些文件添加到暂存区就变成了 staged 状态，最后通过提交更新，将暂存区的文件提交到仓库，又变成了 unmodified 状态。
+2. 配置 2.1 GitHub配置密钥 首先在本机创建SSH key，生成的key将会存在于~/.ssh/id_rsa.pub：
+$ ssh-keygen -t rsa -C &#34;email@example.com&#34; 在GitHub打开setting，选择添加SSH Key，然后粘贴id_rsa.">
+<meta name="author" content="">
+<link rel="canonical" href="http://example.org/posts/git%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E4%B8%8E%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.3613efbd0b1772781e8f49935e973cae632a7f61471c05b17be155505ccf87b5.css" integrity="sha256-NhPvvQsXcngej0mTXpc8rmMqf2FHHAWxe&#43;FVUFzPh7U=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="http://example.org/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://example.org/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://example.org/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://example.org/apple-touch-icon.png">
+<link rel="mask-icon" href="http://example.org/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="Git基础概念与常用命令" />
+<meta property="og:description" content="1. 基础概念 仓库
+每个项目整个文件夹称为一个仓库repository，仓库中包含零到多个文件，仓库的改动由链状的提交commit所表示，这些提交又分布在不同的分支branch上。每个仓库都有一个起始默认的仓库master/main，然后新建和删除不同的分支，分支之间可以相互合并，以达到多人共同开发同一个项目。
+HEAD表示当前指向的提交。
+远程仓库
+origin表示远程仓库，每个仓库包含本地仓库和对应的远程仓库，例如对应为dev和origin/dev，可以从远程仓库分支拉取更新到本地，以及将本地提交的修改推送到远程分支。
+1.1 文件状态 对于Git项目，仓库文件夹中的文件有如下几种状态：
+untracked/未追踪
+未追踪的文件就是临时存在当前仓库文件夹中，但是并未包含在仓库中的文件，一般是新增的准备加入仓库中的文件，或是产生的日志文件等临时文件。
+未追踪的文件如果不想加到仓库中，而且也不想通过 git status 看到，可以将文件规则加到.gitignore文件中。
+如果是需要加到仓库中的文件，通过 git add 可以将文件变为暂存状态，然后就可以提交到仓库中。
+unmodified/未修改
+存在仓库中的所有文件，如果本地文件未被修改，则是未修改的状态。
+通过 git status 无法看到未修改的文件，但是可以看到哪些文件是属于已修改和暂存状态的。
+modified/已修改
+存在仓库中的文件，修改后，就会变成已修改状态，已修改的文件所在称为工作区。
+通过 git add 可以将已修改的文件转成暂存状态，而 git checkout &ndash; file 则将文件修改撤销，变为未修改状态。
+staged/暂存
+仓库文件转位暂存状态后，就是可以准备提交的状态了，暂存的文件所处暂存区。
+通过 git commit 可以将所有暂存的文件提交，文件再次变为未修改状态，而 git reset HEAD file 则会将暂存的文件退回到已修改状态。
+从上图中可以看到仓库文件的状态流转。不属于仓库的文件是 untracked 状态，属于仓库的文件是 unmodified 状态，作出更改后变为modified状态，将这些文件添加到暂存区就变成了 staged 状态，最后通过提交更新，将暂存区的文件提交到仓库，又变成了 unmodified 状态。
+2. 配置 2.1 GitHub配置密钥 首先在本机创建SSH key，生成的key将会存在于~/.ssh/id_rsa.pub：
+$ ssh-keygen -t rsa -C &#34;email@example.com&#34; 在GitHub打开setting，选择添加SSH Key，然后粘贴id_rsa." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://example.org/posts/git%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E4%B8%8E%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-07-16T19:02:11+08:00" />
+<meta property="article:modified_time" content="2023-07-16T19:02:11+08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Git基础概念与常用命令"/>
+<meta name="twitter:description" content="1. 基础概念 仓库
+每个项目整个文件夹称为一个仓库repository，仓库中包含零到多个文件，仓库的改动由链状的提交commit所表示，这些提交又分布在不同的分支branch上。每个仓库都有一个起始默认的仓库master/main，然后新建和删除不同的分支，分支之间可以相互合并，以达到多人共同开发同一个项目。
+HEAD表示当前指向的提交。
+远程仓库
+origin表示远程仓库，每个仓库包含本地仓库和对应的远程仓库，例如对应为dev和origin/dev，可以从远程仓库分支拉取更新到本地，以及将本地提交的修改推送到远程分支。
+1.1 文件状态 对于Git项目，仓库文件夹中的文件有如下几种状态：
+untracked/未追踪
+未追踪的文件就是临时存在当前仓库文件夹中，但是并未包含在仓库中的文件，一般是新增的准备加入仓库中的文件，或是产生的日志文件等临时文件。
+未追踪的文件如果不想加到仓库中，而且也不想通过 git status 看到，可以将文件规则加到.gitignore文件中。
+如果是需要加到仓库中的文件，通过 git add 可以将文件变为暂存状态，然后就可以提交到仓库中。
+unmodified/未修改
+存在仓库中的所有文件，如果本地文件未被修改，则是未修改的状态。
+通过 git status 无法看到未修改的文件，但是可以看到哪些文件是属于已修改和暂存状态的。
+modified/已修改
+存在仓库中的文件，修改后，就会变成已修改状态，已修改的文件所在称为工作区。
+通过 git add 可以将已修改的文件转成暂存状态，而 git checkout &ndash; file 则将文件修改撤销，变为未修改状态。
+staged/暂存
+仓库文件转位暂存状态后，就是可以准备提交的状态了，暂存的文件所处暂存区。
+通过 git commit 可以将所有暂存的文件提交，文件再次变为未修改状态，而 git reset HEAD file 则会将暂存的文件退回到已修改状态。
+从上图中可以看到仓库文件的状态流转。不属于仓库的文件是 untracked 状态，属于仓库的文件是 unmodified 状态，作出更改后变为modified状态，将这些文件添加到暂存区就变成了 staged 状态，最后通过提交更新，将暂存区的文件提交到仓库，又变成了 unmodified 状态。
+2. 配置 2.1 GitHub配置密钥 首先在本机创建SSH key，生成的key将会存在于~/.ssh/id_rsa.pub：
+$ ssh-keygen -t rsa -C &#34;email@example.com&#34; 在GitHub打开setting，选择添加SSH Key，然后粘贴id_rsa."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://example.org/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Git基础概念与常用命令",
+      "item": "http://example.org/posts/git%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E4%B8%8E%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Git基础概念与常用命令",
+  "name": "Git基础概念与常用命令",
+  "description": "1. 基础概念 仓库\n每个项目整个文件夹称为一个仓库repository，仓库中包含零到多个文件，仓库的改动由链状的提交commit所表示，这些提交又分布在不同的分支branch上。每个仓库都有一个起始默认的仓库master/main，然后新建和删除不同的分支，分支之间可以相互合并，以达到多人共同开发同一个项目。\nHEAD表示当前指向的提交。\n远程仓库\norigin表示远程仓库，每个仓库包含本地仓库和对应的远程仓库，例如对应为dev和origin/dev，可以从远程仓库分支拉取更新到本地，以及将本地提交的修改推送到远程分支。\n1.1 文件状态 对于Git项目，仓库文件夹中的文件有如下几种状态：\nuntracked/未追踪\n未追踪的文件就是临时存在当前仓库文件夹中，但是并未包含在仓库中的文件，一般是新增的准备加入仓库中的文件，或是产生的日志文件等临时文件。\n未追踪的文件如果不想加到仓库中，而且也不想通过 git status 看到，可以将文件规则加到.gitignore文件中。\n如果是需要加到仓库中的文件，通过 git add 可以将文件变为暂存状态，然后就可以提交到仓库中。\nunmodified/未修改\n存在仓库中的所有文件，如果本地文件未被修改，则是未修改的状态。\n通过 git status 无法看到未修改的文件，但是可以看到哪些文件是属于已修改和暂存状态的。\nmodified/已修改\n存在仓库中的文件，修改后，就会变成已修改状态，已修改的文件所在称为工作区。\n通过 git add 可以将已修改的文件转成暂存状态，而 git checkout \u0026ndash; file 则将文件修改撤销，变为未修改状态。\nstaged/暂存\n仓库文件转位暂存状态后，就是可以准备提交的状态了，暂存的文件所处暂存区。\n通过 git commit 可以将所有暂存的文件提交，文件再次变为未修改状态，而 git reset HEAD file 则会将暂存的文件退回到已修改状态。\n从上图中可以看到仓库文件的状态流转。不属于仓库的文件是 untracked 状态，属于仓库的文件是 unmodified 状态，作出更改后变为modified状态，将这些文件添加到暂存区就变成了 staged 状态，最后通过提交更新，将暂存区的文件提交到仓库，又变成了 unmodified 状态。\n2. 配置 2.1 GitHub配置密钥 首先在本机创建SSH key，生成的key将会存在于~/.ssh/id_rsa.pub：\n$ ssh-keygen -t rsa -C \u0026#34;email@example.com\u0026#34; 在GitHub打开setting，选择添加SSH Key，然后粘贴id_rsa.",
+  "keywords": [
+    "Git", "命令"
+  ],
+  "articleBody": "1. 基础概念 仓库\n每个项目整个文件夹称为一个仓库repository，仓库中包含零到多个文件，仓库的改动由链状的提交commit所表示，这些提交又分布在不同的分支branch上。每个仓库都有一个起始默认的仓库master/main，然后新建和删除不同的分支，分支之间可以相互合并，以达到多人共同开发同一个项目。\nHEAD表示当前指向的提交。\n远程仓库\norigin表示远程仓库，每个仓库包含本地仓库和对应的远程仓库，例如对应为dev和origin/dev，可以从远程仓库分支拉取更新到本地，以及将本地提交的修改推送到远程分支。\n1.1 文件状态 对于Git项目，仓库文件夹中的文件有如下几种状态：\nuntracked/未追踪\n未追踪的文件就是临时存在当前仓库文件夹中，但是并未包含在仓库中的文件，一般是新增的准备加入仓库中的文件，或是产生的日志文件等临时文件。\n未追踪的文件如果不想加到仓库中，而且也不想通过 git status 看到，可以将文件规则加到.gitignore文件中。\n如果是需要加到仓库中的文件，通过 git add 可以将文件变为暂存状态，然后就可以提交到仓库中。\nunmodified/未修改\n存在仓库中的所有文件，如果本地文件未被修改，则是未修改的状态。\n通过 git status 无法看到未修改的文件，但是可以看到哪些文件是属于已修改和暂存状态的。\nmodified/已修改\n存在仓库中的文件，修改后，就会变成已修改状态，已修改的文件所在称为工作区。\n通过 git add 可以将已修改的文件转成暂存状态，而 git checkout – file 则将文件修改撤销，变为未修改状态。\nstaged/暂存\n仓库文件转位暂存状态后，就是可以准备提交的状态了，暂存的文件所处暂存区。\n通过 git commit 可以将所有暂存的文件提交，文件再次变为未修改状态，而 git reset HEAD file 则会将暂存的文件退回到已修改状态。\n从上图中可以看到仓库文件的状态流转。不属于仓库的文件是 untracked 状态，属于仓库的文件是 unmodified 状态，作出更改后变为modified状态，将这些文件添加到暂存区就变成了 staged 状态，最后通过提交更新，将暂存区的文件提交到仓库，又变成了 unmodified 状态。\n2. 配置 2.1 GitHub配置密钥 首先在本机创建SSH key，生成的key将会存在于~/.ssh/id_rsa.pub：\n$ ssh-keygen -t rsa -C \"email@example.com\" 在GitHub打开setting，选择添加SSH Key，然后粘贴id_rsa.pub的内容。\n2.2 配置文件 .gitconfig ~/.gitconfig文件存在用户根目录，是git的配置文件。\n通过 git config 命令修改该配置文件，也可以直接打开文件作修改。\n$ git config --list # 查看所以配置 $ git config # 查看某个配置 $ git config --global key value # 设置配置 以下是一部分常用的配置：\n$ git config --global user.name \"name\" # 设置用户名 $ git config --global user.email \"email@example.com\" # 设置邮箱 $ git config --global alias.st status # 设置命令别名 .gitignore 该文件放在每个仓库的根目录，用来列出忽略的文件的模式，对于忽略的文件模式，新增的文件和产生的修改将不会被显示。\n当然也可以存在之前已提交的文件，现在被.gitignore的规则所忽略。\n.git-credentials 这个文件会记录用户名和密码，这样操作git的更新和提交的时候，就不需要每次输入用户名和密码了。\n首先在~/.git-credentials输入内容：\nhttps://:@github.com 接着通过命令让密码保存生效：\n$ git config --global credential.helper store 3. 命令 Git的命令有很多，熟练使用常用的即可，并且通过桌面软件如GitHub Desktop，也可以方便地完成很多操作。\n查看参考文档：\n$ git help # 查看常用命令 $ git -h # 查看某个命令的用法 3.1 仓库 init 在当前文件夹创建仓库，并生成.git/管理版本库。\n$ git init clone 从远端克隆仓库到本地。\n$ git clone # 克隆仓库 $ git clone -b # 克隆某个分支 remote $ git remote # 远程库名称，一般为origin $ git remote -v # 查看远程库地址 $ git remote add # 添加新的远程仓库 3.2 拉取上传 pull 拉取远程仓库代码更新，合并到本地。\n$ git pull $ git pull --rebase # 变基后再合并 fetch 拉取远程仓库代码更新到对应的远程分支，但不合并到本地分支。\n$ git fetch $ git fetch # 从远程库抓取 push 将本地提交推送至远程库。\n$ git push # 本地提交推送至当前分支对应的远程库 $ git push # 将指定分支推送更新指定远程库 $ git push HEAD # 将当前分支推送更新指定远程库 3.3 分支 branch 该命令用于显示分支、新建或删除分支。\n$ git branch # 显示本地分支 $ git branch -a # 显示本地和远程分支 $ git branch # 从当前分支创建分支 $ git branch # 从某个提交创建分支 $ git branch -d # 删除分支 $ git branch -D # 强制删除分支，即使有未合并的提交 $ git branch -u / # 设置当前分支对应的远程分支 merge 将指定分支合并到本分支。\n$ git merge rebase 将当前分支对于基于的分支变基。\n假设当前分支 dev 基于 release 分支开发，并且又提交了两次 commit C1 和 C2，而 release 分支在我们新建 dev 分支后又有了新的提交，变基就是从基于的 release 分支最新的一次提交，参照 commit C1 和 C2，生成新的 commit C1’ 和 C2’，然后将 dev 分支的指针指向 C2‘。进行变基操作需要当前的工作区没有未提交的修改，如果有可以先提交或者暂时 stash。\n通过 merge 合并分支会生成一个两条分支的合并，而通过 rebase 将分支变基再合并则往往会变成一条直线的提交，提交记录更加优雅整洁。当然如果变基过程有文件冲突的话，需要解决冲突，变基还是会产生两条分支合并的提交记录。\n$ git rebase # 当前分支基于分支1变基 $ git rebase # 分支2基于分支1变基 $ git rebase --onto # 当分支3基于分支2而分支2基于分支1，使分支3基于分支1变基 有时候当前分支有多个本地提交，准备推送至远端，但是想要将他们合并成一个提交，再推送至远端。先通过 rebase：\n$ git rebase -i HEAD~ # 编辑最新的n个提交 然后会打开一个临时文本进行编辑，将第二个到最后的 pick 改为 squash，然后保存退出。就可以将多个本地提交合并了。\ncherry-pick 把某个指定提交合并到当前分支。\n$ git cherry-pick # 把提交合并到当前分支 $ git cherry-pick .. # 把从提交1下一个提交到提交2合并到当前分支 $ git cherry-pick ^.. # 把从提交1到提交2合并到当前分支 # 选项 # -n 不自动提交，选择多个提交时会将修改合并 cherry 显示本地尚未推送的提交。\n$ git cherry # 显示本地尚未推送的提交 $ git cherry # 从提交1到提交2增加的提交 # 选项 # -v 显示注释 3.4 状态 status 显示仓库状态：所处分支、和远程库的分支差距、有哪些已修改和暂存的文件。\n$ git status # 显示仓库状态 $ git status -s # 简洁状态 log 查看提交记录。\n$ git log # 查看提交记录 $ git log # 和指定文件或目录相关的提交记录 $ git log ^ # 显示包含分支1不包含分支2提交 $ git log --oneline --decorate --graph --all # 查看分叉历史 # 选项 # - 显示最新n个提交 # --oneline 单行显示 # --no-abbrev 显示完整commit id # --stat 显示差异统计 # -p 显示差异 reflog 查看版本记录。\n$ git reflog # 查看版本记录 $ git reflog # 查看分支的版本记录 # 选项 # --no-abbrev 显示完整commit id diff 查看已修改文件的修改。\n$ git diff # 查看所有文件的修改 $ git diff # 查看文件的修改 $ git diff --staged # 查看暂存文件的修改 $ git diff # 比较两个提交 # 选项 # --word-diff 旧的和新的比较显示在一行 difftool 使用外部工具查看修改。\n$ git difftool # 查看所有文件的修改 $ git difftool # 查看文件的修改 3.5 编辑与提交 add 将已修改文件移动到暂存区。\n$ git add . # 添加所有文件到暂存区 $ git add # 添加文件到暂存区 rm 删除文件。\n$ git rm # 删除文件和在仓库中的索引，放到暂存区等待提交 # 选项 # --cached 只删除仓库中的索引，不删除文件 # -r 删除文件夹 mv 重命名文件。\n$ git mv # 重命名文件 commit 将暂存区的文件提交，提交务必带有提交信息。\n$ git commit -m \"...\" # 提交暂存区的修改 # 选项 # -a 提交所有已追踪的修改，而不只是暂存区 # --amend 本次提交并入上一次提交 checkout 切换分支，或是将工作区的修改撤销。\n$ git checkout # 切换分支 $ git checkout -b # 创建并切换分支 $ git checkout -- # 撤销工作区文件修改 $ git checkout -- . # 撤销工作区所有文件修改 reset 将版本回退至某一提交，或是将暂存区的文件放回工作区。\n$ git reset # 版本回退到某一提交 $ git reset HEAD # 将暂存区文件放回工作区 $ git reset HEAD # 将暂存区所有文件放回工作区 clean 删除未追踪文件。\n$ git clean -f # 删除未追踪文件 $ git clean -fd # 删除未追踪文件和目录 $ git clean -xfd # 删除未追踪文件和目录和.gitignore的文件 stash 工作现场的保存和恢复。\n如果当前有一些未提交的修改是有用的，但是还暂时不想提交一个分支，又要切换其他分支的时候，可以选择把工作现场保存，这样可以先做其他改动，或者切换其他分支，后面可以在任何一个分支将工作现场恢复，继续做修改。\n$ git stash # 保存当前工作现场 $ git stash save \"...\" # 保存当前工作现场，注释说明 $ git stash list # 查看工作现场 $ git stash apply # 恢复所有工作现场 $ git stash apply stash@{0} # 恢复某个工作现场 $ git stash pop # 恢复所有工作现场，并删除保存 $ git stash pop stash@{0} # 恢复某个工作现场，并删除保存 $ git stash drop # 删除所有工作现场 $ git stash drop stash@{0} # 删除某个工作现场 $ git stash clear # 清空工作现场 blame 显示文件的每一行所对应的最新提交。\n$ git blame # 显示文件每一行的最新提交 3.6 标签 tag 标签。\n$ git tag # 查看所有标签 $ git tag # 创建标签 $ git tag -d # 删除标签 show 显示各种类型的对象。\n$ git show # 查看某个标签的信息 3.7 管理 gc 删除 Git 仓库中一些不需要的仓库管理文件。\n$ git gc 4. 操作技巧 4.1 将分支回退到之前的提交 有时候做了错误的提交，然后想将当前分支回退到之前的某次提交。\n这时可以对于想要回退的分支 test，基于之前的某次提交新建一个临时分支 test_tmp，将原本的分支 test 删除掉，再基于临时分支 test_tmp 新建回分支 test，最后将临时分支 test_tmp 删除。这时候分支就相当于回退到之前的某次提交了。\n参考 Git - Reference 《Pro Git》中文版 ",
+  "wordCount" : "801",
+  "inLanguage": "en",
+  "datePublished": "2023-07-16T19:02:11+08:00",
+  "dateModified": "2023-07-16T19:02:11+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://example.org/posts/git%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E4%B8%8E%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "My New Hugo Site",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://example.org/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://example.org/" accesskey="h" title="My New Hugo Site (Alt + H)">My New Hugo Site</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      Git基础概念与常用命令
+    </h1>
+    <div class="post-meta"><span title='2023-07-16 19:02:11 +0800 CST'>July 16, 2023</span>
+
+</div>
+  </header> 
+  <div class="post-content"><h1 id="1-基础概念">1. 基础概念<a hidden class="anchor" aria-hidden="true" href="#1-基础概念">#</a></h1>
+<p><strong>仓库</strong></p>
+<p>每个项目整个文件夹称为一个仓库repository，仓库中包含零到多个文件，仓库的改动由链状的提交commit所表示，这些提交又分布在不同的分支branch上。每个仓库都有一个起始默认的仓库master/main，然后新建和删除不同的分支，分支之间可以相互合并，以达到多人共同开发同一个项目。</p>
+<p>HEAD表示当前指向的提交。</p>
+<p><strong>远程仓库</strong></p>
+<p>origin表示远程仓库，每个仓库包含本地仓库和对应的远程仓库，例如对应为dev和origin/dev，可以从远程仓库分支拉取更新到本地，以及将本地提交的修改推送到远程分支。</p>
+<h2 id="11-文件状态">1.1 文件状态<a hidden class="anchor" aria-hidden="true" href="#11-文件状态">#</a></h2>
+<p>对于Git项目，仓库文件夹中的文件有如下几种状态：</p>
+<p><strong>untracked/未追踪</strong></p>
+<p>未追踪的文件就是临时存在当前仓库文件夹中，但是并未包含在仓库中的文件，一般是新增的准备加入仓库中的文件，或是产生的日志文件等临时文件。</p>
+<p>未追踪的文件如果不想加到仓库中，而且也不想通过 git status 看到，可以将文件规则加到.gitignore文件中。</p>
+<p>如果是需要加到仓库中的文件，通过 git add 可以将文件变为暂存状态，然后就可以提交到仓库中。</p>
+<p><strong>unmodified/未修改</strong></p>
+<p>存在仓库中的所有文件，如果本地文件未被修改，则是未修改的状态。</p>
+<p>通过 git status 无法看到未修改的文件，但是可以看到哪些文件是属于已修改和暂存状态的。</p>
+<p><strong>modified/已修改</strong></p>
+<p>存在仓库中的文件，修改后，就会变成已修改状态，已修改的文件所在称为工作区。</p>
+<p>通过 git add 可以将已修改的文件转成暂存状态，而 git checkout &ndash; file 则将文件修改撤销，变为未修改状态。</p>
+<p><strong>staged/暂存</strong></p>
+<p>仓库文件转位暂存状态后，就是可以准备提交的状态了，暂存的文件所处暂存区。</p>
+<p>通过 git commit 可以将所有暂存的文件提交，文件再次变为未修改状态，而 git reset HEAD file 则会将暂存的文件退回到已修改状态。</p>
+<p><img loading="lazy" src="https://blog-1304941664.cos.ap-guangzhou.myqcloud.com/article_material/version_control/git_file_stages.png" alt="git_file_stages"  />
+</p>
+<p>从上图中可以看到仓库文件的状态流转。不属于仓库的文件是 untracked 状态，属于仓库的文件是 unmodified 状态，作出更改后变为modified状态，将这些文件添加到暂存区就变成了 staged 状态，最后通过提交更新，将暂存区的文件提交到仓库，又变成了 unmodified 状态。</p>
+<h1 id="2-配置">2. 配置<a hidden class="anchor" aria-hidden="true" href="#2-配置">#</a></h1>
+<h2 id="21-github配置密钥">2.1 GitHub配置密钥<a hidden class="anchor" aria-hidden="true" href="#21-github配置密钥">#</a></h2>
+<p>首先在本机创建SSH key，生成的key将会存在于~/.ssh/id_rsa.pub：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ ssh-keygen -t rsa -C <span style="color:#e6db74">&#34;email@example.com&#34;</span>
+</span></span></code></pre></div><p>在GitHub打开setting，选择添加SSH Key，然后粘贴id_rsa.pub的内容。</p>
+<h2 id="22-配置文件">2.2 配置文件<a hidden class="anchor" aria-hidden="true" href="#22-配置文件">#</a></h2>
+<h3 id="gitconfig">.gitconfig<a hidden class="anchor" aria-hidden="true" href="#gitconfig">#</a></h3>
+<p>~/.gitconfig文件存在用户根目录，是git的配置文件。</p>
+<p>通过 git config 命令修改该配置文件，也可以直接打开文件作修改。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git config --list <span style="color:#75715e"># 查看所以配置</span>
+</span></span><span style="display:flex;"><span>$ git config &lt;key&gt; <span style="color:#75715e"># 查看某个配置</span>
+</span></span><span style="display:flex;"><span>$ git config --global key value <span style="color:#75715e"># 设置配置</span>
+</span></span></code></pre></div><p>以下是一部分常用的配置：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git config --global user.name <span style="color:#e6db74">&#34;name&#34;</span> <span style="color:#75715e"># 设置用户名</span>
+</span></span><span style="display:flex;"><span>$ git config --global user.email <span style="color:#e6db74">&#34;email@example.com&#34;</span> <span style="color:#75715e"># 设置邮箱</span>
+</span></span><span style="display:flex;"><span>$ git config --global alias.st status <span style="color:#75715e"># 设置命令别名</span>
+</span></span></code></pre></div><h3 id="gitignore">.gitignore<a hidden class="anchor" aria-hidden="true" href="#gitignore">#</a></h3>
+<p>该文件放在每个仓库的根目录，用来列出忽略的文件的模式，对于忽略的文件模式，新增的文件和产生的修改将不会被显示。</p>
+<p>当然也可以存在之前已提交的文件，现在被.gitignore的规则所忽略。</p>
+<h3 id="git-credentials">.git-credentials<a hidden class="anchor" aria-hidden="true" href="#git-credentials">#</a></h3>
+<p>这个文件会记录用户名和密码，这样操作git的更新和提交的时候，就不需要每次输入用户名和密码了。</p>
+<p>首先在~/.git-credentials输入内容：</p>
+<pre tabindex="0"><code>https://&lt;username&gt;:&lt;password&gt;@github.com
+</code></pre><p>接着通过命令让密码保存生效：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git config --global credential.helper store
+</span></span></code></pre></div><h1 id="3-命令">3. 命令<a hidden class="anchor" aria-hidden="true" href="#3-命令">#</a></h1>
+<p>Git的命令有很多，熟练使用常用的即可，并且通过桌面软件如GitHub Desktop，也可以方便地完成很多操作。</p>
+<p>查看参考文档：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git help <span style="color:#75715e"># 查看常用命令</span>
+</span></span><span style="display:flex;"><span>$ git &lt;cmd&gt; -h <span style="color:#75715e"># 查看某个命令的用法</span>
+</span></span></code></pre></div><h2 id="31-仓库">3.1 仓库<a hidden class="anchor" aria-hidden="true" href="#31-仓库">#</a></h2>
+<h3 id="init">init<a hidden class="anchor" aria-hidden="true" href="#init">#</a></h3>
+<p>在当前文件夹创建仓库，并生成.git/管理版本库。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git init
+</span></span></code></pre></div><h3 id="clone">clone<a hidden class="anchor" aria-hidden="true" href="#clone">#</a></h3>
+<p>从远端克隆仓库到本地。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git clone &lt;url&gt; <span style="color:#75715e"># 克隆仓库</span>
+</span></span><span style="display:flex;"><span>$ git clone -b &lt;branch&gt; &lt;url&gt; <span style="color:#75715e"># 克隆某个分支</span>
+</span></span></code></pre></div><h3 id="remote">remote<a hidden class="anchor" aria-hidden="true" href="#remote">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git remote <span style="color:#75715e"># 远程库名称，一般为origin</span>
+</span></span><span style="display:flex;"><span>$ git remote -v <span style="color:#75715e"># 查看远程库地址</span>
+</span></span><span style="display:flex;"><span>$ git remote add &lt;name&gt; &lt;url&gt; <span style="color:#75715e"># 添加新的远程仓库</span>
+</span></span></code></pre></div><h2 id="32-拉取上传">3.2 拉取上传<a hidden class="anchor" aria-hidden="true" href="#32-拉取上传">#</a></h2>
+<h3 id="pull">pull<a hidden class="anchor" aria-hidden="true" href="#pull">#</a></h3>
+<p>拉取远程仓库代码更新，合并到本地。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git pull
+</span></span><span style="display:flex;"><span>$ git pull --rebase <span style="color:#75715e"># 变基后再合并</span>
+</span></span></code></pre></div><h3 id="fetch">fetch<a hidden class="anchor" aria-hidden="true" href="#fetch">#</a></h3>
+<p>拉取远程仓库代码更新到对应的远程分支，但不合并到本地分支。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git fetch
+</span></span><span style="display:flex;"><span>$ git fetch &lt;remote&gt; <span style="color:#75715e"># 从远程库抓取</span>
+</span></span></code></pre></div><h3 id="push">push<a hidden class="anchor" aria-hidden="true" href="#push">#</a></h3>
+<p>将本地提交推送至远程库。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git push <span style="color:#75715e"># 本地提交推送至当前分支对应的远程库</span>
+</span></span><span style="display:flex;"><span>$ git push &lt;remote&gt; &lt;branch&gt; <span style="color:#75715e"># 将指定分支推送更新指定远程库</span>
+</span></span><span style="display:flex;"><span>$ git push &lt;remote&gt; HEAD <span style="color:#75715e"># 将当前分支推送更新指定远程库</span>
+</span></span></code></pre></div><h2 id="33-分支">3.3 分支<a hidden class="anchor" aria-hidden="true" href="#33-分支">#</a></h2>
+<h3 id="branch">branch<a hidden class="anchor" aria-hidden="true" href="#branch">#</a></h3>
+<p>该命令用于显示分支、新建或删除分支。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git branch <span style="color:#75715e"># 显示本地分支</span>
+</span></span><span style="display:flex;"><span>$ git branch -a <span style="color:#75715e"># 显示本地和远程分支</span>
+</span></span><span style="display:flex;"><span>$ git branch &lt;branch&gt; <span style="color:#75715e"># 从当前分支创建分支</span>
+</span></span><span style="display:flex;"><span>$ git branch &lt;branch&gt; &lt;commit&gt; <span style="color:#75715e"># 从某个提交创建分支</span>
+</span></span><span style="display:flex;"><span>$ git branch -d &lt;branch&gt; <span style="color:#75715e"># 删除分支</span>
+</span></span><span style="display:flex;"><span>$ git branch -D &lt;branch&gt; <span style="color:#75715e"># 强制删除分支，即使有未合并的提交</span>
+</span></span><span style="display:flex;"><span>$ git branch -u &lt;remote&gt;/&lt;branch&gt; <span style="color:#75715e"># 设置当前分支对应的远程分支</span>
+</span></span></code></pre></div><h3 id="merge">merge<a hidden class="anchor" aria-hidden="true" href="#merge">#</a></h3>
+<p>将指定分支合并到本分支。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git merge &lt;branch&gt; 
+</span></span></code></pre></div><h3 id="rebase">rebase<a hidden class="anchor" aria-hidden="true" href="#rebase">#</a></h3>
+<p>将当前分支对于基于的分支变基。</p>
+<p>假设当前分支 dev 基于 release 分支开发，并且又提交了两次 commit C1 和 C2，而 release 分支在我们新建 dev 分支后又有了新的提交，变基就是从基于的 release 分支最新的一次提交，参照 commit C1 和 C2，生成新的 commit C1&rsquo; 和 C2&rsquo;，然后将 dev 分支的指针指向 C2‘。进行变基操作需要当前的工作区没有未提交的修改，如果有可以先提交或者暂时 stash。</p>
+<p>通过 merge 合并分支会生成一个两条分支的合并，而通过 rebase 将分支变基再合并则往往会变成一条直线的提交，提交记录更加优雅整洁。当然如果变基过程有文件冲突的话，需要解决冲突，变基还是会产生两条分支合并的提交记录。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git rebase &lt;branch1&gt; <span style="color:#75715e"># 当前分支基于分支1变基</span>
+</span></span><span style="display:flex;"><span>$ git rebase &lt;branch1&gt; &lt;branch2&gt; <span style="color:#75715e"># 分支2基于分支1变基</span>
+</span></span><span style="display:flex;"><span>$ git rebase --onto &lt;branch1&gt; &lt;branch2&gt; &lt;branch3&gt; <span style="color:#75715e"># 当分支3基于分支2而分支2基于分支1，使分支3基于分支1变基</span>
+</span></span></code></pre></div><p>有时候当前分支有多个本地提交，准备推送至远端，但是想要将他们合并成一个提交，再推送至远端。先通过 rebase：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git rebase -i HEAD~&lt;n&gt; <span style="color:#75715e"># 编辑最新的n个提交</span>
+</span></span></code></pre></div><p>然后会打开一个临时文本进行编辑，将第二个到最后的 pick 改为 squash，然后保存退出。就可以将多个本地提交合并了。</p>
+<h3 id="cherry-pick">cherry-pick<a hidden class="anchor" aria-hidden="true" href="#cherry-pick">#</a></h3>
+<p>把某个指定提交合并到当前分支。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git cherry-pick &lt;commit&gt; <span style="color:#75715e"># 把提交合并到当前分支</span>
+</span></span><span style="display:flex;"><span>$ git cherry-pick &lt;commit1&gt;..&lt;commit2&gt; <span style="color:#75715e"># 把从提交1下一个提交到提交2合并到当前分支</span>
+</span></span><span style="display:flex;"><span>$ git cherry-pick &lt;commit1&gt;^..&lt;commit2&gt; <span style="color:#75715e"># 把从提交1到提交2合并到当前分支</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 选项</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># -n 不自动提交，选择多个提交时会将修改合并</span>
+</span></span></code></pre></div><h3 id="cherry">cherry<a hidden class="anchor" aria-hidden="true" href="#cherry">#</a></h3>
+<p>显示本地尚未推送的提交。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git cherry <span style="color:#75715e"># 显示本地尚未推送的提交</span>
+</span></span><span style="display:flex;"><span>$ git cherry &lt;commit1&gt; &lt;commit2&gt; <span style="color:#75715e"># 从提交1到提交2增加的提交</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 选项</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># -v 显示注释</span>
+</span></span></code></pre></div><h2 id="34-状态">3.4 状态<a hidden class="anchor" aria-hidden="true" href="#34-状态">#</a></h2>
+<h3 id="status">status<a hidden class="anchor" aria-hidden="true" href="#status">#</a></h3>
+<p>显示仓库状态：所处分支、和远程库的分支差距、有哪些已修改和暂存的文件。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git status <span style="color:#75715e"># 显示仓库状态</span>
+</span></span><span style="display:flex;"><span>$ git status -s <span style="color:#75715e"># 简洁状态</span>
+</span></span></code></pre></div><h3 id="log">log<a hidden class="anchor" aria-hidden="true" href="#log">#</a></h3>
+<p>查看提交记录。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git log <span style="color:#75715e"># 查看提交记录</span>
+</span></span><span style="display:flex;"><span>$ git log &lt;file&gt; <span style="color:#75715e"># 和指定文件或目录相关的提交记录</span>
+</span></span><span style="display:flex;"><span>$ git log &lt;branch1&gt; ^&lt;branch2&gt; <span style="color:#75715e"># 显示包含分支1不包含分支2提交</span>
+</span></span><span style="display:flex;"><span>$ git log --oneline --decorate --graph --all <span style="color:#75715e"># 查看分叉历史</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 选项</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># -&lt;n&gt; 显示最新n个提交</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># --oneline 单行显示</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># --no-abbrev 显示完整commit id</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># --stat 显示差异统计</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># -p 显示差异</span>
+</span></span></code></pre></div><h3 id="reflog">reflog<a hidden class="anchor" aria-hidden="true" href="#reflog">#</a></h3>
+<p>查看版本记录。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git reflog <span style="color:#75715e"># 查看版本记录</span>
+</span></span><span style="display:flex;"><span>$ git reflog &lt;branch&gt; <span style="color:#75715e"># 查看分支的版本记录</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 选项</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># --no-abbrev 显示完整commit id</span>
+</span></span></code></pre></div><h3 id="diff">diff<a hidden class="anchor" aria-hidden="true" href="#diff">#</a></h3>
+<p>查看已修改文件的修改。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git diff <span style="color:#75715e"># 查看所有文件的修改</span>
+</span></span><span style="display:flex;"><span>$ git diff &lt;file&gt; <span style="color:#75715e"># 查看文件的修改</span>
+</span></span><span style="display:flex;"><span>$ git diff --staged &lt;file&gt; <span style="color:#75715e"># 查看暂存文件的修改</span>
+</span></span><span style="display:flex;"><span>$ git diff &lt;commit1&gt; &lt;commit2&gt; <span style="color:#75715e"># 比较两个提交</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 选项</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># --word-diff 旧的和新的比较显示在一行</span>
+</span></span></code></pre></div><h3 id="difftool">difftool<a hidden class="anchor" aria-hidden="true" href="#difftool">#</a></h3>
+<p>使用外部工具查看修改。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git difftool <span style="color:#75715e"># 查看所有文件的修改</span>
+</span></span><span style="display:flex;"><span>$ git difftool &lt;file&gt; <span style="color:#75715e"># 查看文件的修改</span>
+</span></span></code></pre></div><h2 id="35-编辑与提交">3.5 编辑与提交<a hidden class="anchor" aria-hidden="true" href="#35-编辑与提交">#</a></h2>
+<h3 id="add">add<a hidden class="anchor" aria-hidden="true" href="#add">#</a></h3>
+<p>将已修改文件移动到暂存区。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git add . <span style="color:#75715e"># 添加所有文件到暂存区</span>
+</span></span><span style="display:flex;"><span>$ git add &lt;file&gt; <span style="color:#75715e"># 添加文件到暂存区</span>
+</span></span></code></pre></div><h3 id="rm">rm<a hidden class="anchor" aria-hidden="true" href="#rm">#</a></h3>
+<p>删除文件。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git rm &lt;file&gt; <span style="color:#75715e"># 删除文件和在仓库中的索引，放到暂存区等待提交</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 选项</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># --cached 只删除仓库中的索引，不删除文件</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># -r 删除文件夹</span>
+</span></span></code></pre></div><h3 id="mv">mv<a hidden class="anchor" aria-hidden="true" href="#mv">#</a></h3>
+<p>重命名文件。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git mv &lt;file1&gt; &lt;file2&gt; <span style="color:#75715e"># 重命名文件</span>
+</span></span></code></pre></div><h3 id="commit">commit<a hidden class="anchor" aria-hidden="true" href="#commit">#</a></h3>
+<p>将暂存区的文件提交，提交务必带有提交信息。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git commit -m <span style="color:#e6db74">&#34;...&#34;</span> <span style="color:#75715e"># 提交暂存区的修改</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 选项</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># -a 提交所有已追踪的修改，而不只是暂存区</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># --amend 本次提交并入上一次提交</span>
+</span></span></code></pre></div><h3 id="checkout">checkout<a hidden class="anchor" aria-hidden="true" href="#checkout">#</a></h3>
+<p>切换分支，或是将工作区的修改撤销。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git checkout &lt;branch&gt; <span style="color:#75715e"># 切换分支</span>
+</span></span><span style="display:flex;"><span>$ git checkout -b &lt;branch&gt; <span style="color:#75715e"># 创建并切换分支</span>
+</span></span><span style="display:flex;"><span>$ git checkout -- &lt;file&gt; <span style="color:#75715e"># 撤销工作区文件修改</span>
+</span></span><span style="display:flex;"><span>$ git checkout -- . <span style="color:#75715e"># 撤销工作区所有文件修改</span>
+</span></span></code></pre></div><h3 id="reset">reset<a hidden class="anchor" aria-hidden="true" href="#reset">#</a></h3>
+<p>将版本回退至某一提交，或是将暂存区的文件放回工作区。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git reset &lt;commit&gt; <span style="color:#75715e"># 版本回退到某一提交</span>
+</span></span><span style="display:flex;"><span>$ git reset HEAD &lt;file&gt; <span style="color:#75715e"># 将暂存区文件放回工作区</span>
+</span></span><span style="display:flex;"><span>$ git reset HEAD <span style="color:#75715e"># 将暂存区所有文件放回工作区</span>
+</span></span></code></pre></div><h3 id="clean">clean<a hidden class="anchor" aria-hidden="true" href="#clean">#</a></h3>
+<p>删除未追踪文件。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git clean -f &lt;file&gt; <span style="color:#75715e"># 删除未追踪文件</span>
+</span></span><span style="display:flex;"><span>$ git clean -fd &lt;file&gt; <span style="color:#75715e"># 删除未追踪文件和目录</span>
+</span></span><span style="display:flex;"><span>$ git clean -xfd &lt;file&gt; <span style="color:#75715e"># 删除未追踪文件和目录和.gitignore的文件</span>
+</span></span></code></pre></div><h3 id="stash">stash<a hidden class="anchor" aria-hidden="true" href="#stash">#</a></h3>
+<p>工作现场的保存和恢复。</p>
+<p>如果当前有一些未提交的修改是有用的，但是还暂时不想提交一个分支，又要切换其他分支的时候，可以选择把工作现场保存，这样可以先做其他改动，或者切换其他分支，后面可以在任何一个分支将工作现场恢复，继续做修改。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git stash <span style="color:#75715e"># 保存当前工作现场</span>
+</span></span><span style="display:flex;"><span>$ git stash save <span style="color:#e6db74">&#34;...&#34;</span> <span style="color:#75715e"># 保存当前工作现场，注释说明</span>
+</span></span><span style="display:flex;"><span>$ git stash list <span style="color:#75715e"># 查看工作现场</span>
+</span></span><span style="display:flex;"><span>$ git stash apply <span style="color:#75715e"># 恢复所有工作现场</span>
+</span></span><span style="display:flex;"><span>$ git stash apply stash@<span style="color:#f92672">{</span>0<span style="color:#f92672">}</span> <span style="color:#75715e"># 恢复某个工作现场</span>
+</span></span><span style="display:flex;"><span>$ git stash pop <span style="color:#75715e"># 恢复所有工作现场，并删除保存</span>
+</span></span><span style="display:flex;"><span>$ git stash pop stash@<span style="color:#f92672">{</span>0<span style="color:#f92672">}</span> <span style="color:#75715e"># 恢复某个工作现场，并删除保存</span>
+</span></span><span style="display:flex;"><span>$ git stash drop <span style="color:#75715e"># 删除所有工作现场</span>
+</span></span><span style="display:flex;"><span>$ git stash drop stash@<span style="color:#f92672">{</span>0<span style="color:#f92672">}</span> <span style="color:#75715e"># 删除某个工作现场</span>
+</span></span><span style="display:flex;"><span>$ git stash clear <span style="color:#75715e"># 清空工作现场</span>
+</span></span></code></pre></div><h3 id="blame">blame<a hidden class="anchor" aria-hidden="true" href="#blame">#</a></h3>
+<p>显示文件的每一行所对应的最新提交。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git blame &lt;file&gt; <span style="color:#75715e"># 显示文件每一行的最新提交</span>
+</span></span></code></pre></div><h2 id="36-标签">3.6 标签<a hidden class="anchor" aria-hidden="true" href="#36-标签">#</a></h2>
+<h3 id="tag">tag<a hidden class="anchor" aria-hidden="true" href="#tag">#</a></h3>
+<p>标签。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git tag <span style="color:#75715e"># 查看所有标签</span>
+</span></span><span style="display:flex;"><span>$ git tag &lt;tag&gt; <span style="color:#75715e"># 创建标签</span>
+</span></span><span style="display:flex;"><span>$ git tag -d &lt;tag&gt; <span style="color:#75715e"># 删除标签</span>
+</span></span></code></pre></div><h3 id="show">show<a hidden class="anchor" aria-hidden="true" href="#show">#</a></h3>
+<p>显示各种类型的对象。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git show &lt;tag&gt; <span style="color:#75715e"># 查看某个标签的信息</span>
+</span></span></code></pre></div><h2 id="37-管理">3.7 管理<a hidden class="anchor" aria-hidden="true" href="#37-管理">#</a></h2>
+<h3 id="gc">gc<a hidden class="anchor" aria-hidden="true" href="#gc">#</a></h3>
+<p>删除 Git 仓库中一些不需要的仓库管理文件。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ git gc
+</span></span></code></pre></div><h1 id="4-操作技巧">4. 操作技巧<a hidden class="anchor" aria-hidden="true" href="#4-操作技巧">#</a></h1>
+<h2 id="41-将分支回退到之前的提交">4.1 将分支回退到之前的提交<a hidden class="anchor" aria-hidden="true" href="#41-将分支回退到之前的提交">#</a></h2>
+<p>有时候做了错误的提交，然后想将当前分支回退到之前的某次提交。</p>
+<p>这时可以对于想要回退的分支 test，基于之前的某次提交新建一个临时分支 test_tmp，将原本的分支 test 删除掉，再基于临时分支 test_tmp 新建回分支 test，最后将临时分支 test_tmp 删除。这时候分支就相当于回退到之前的某次提交了。</p>
+<h1 id="参考">参考<a hidden class="anchor" aria-hidden="true" href="#参考">#</a></h1>
+<ul>
+<li><a href="https://git-scm.com/docs">Git - Reference</a></li>
+<li><a href="https://git-scm.com/book/zh/v2">《Pro Git》中文版</a></li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://example.org/tags/git/">Git</a></li>
+      <li><a href="http://example.org/tags/%E5%91%BD%E4%BB%A4/">命令</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2023 <a href="http://example.org/">My New Hugo Site</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

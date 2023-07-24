@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>web on My New Hugo Site</title>
+    <link>http://example.org/categories/web/</link>
+    <description>Recent content in web on My New Hugo Site</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 25 Jul 2023 02:13:11 +0800</lastBuildDate><atom:link href="http://example.org/categories/web/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>JavaScript基础</title>
+      <link>http://example.org/posts/javascript%E5%9F%BA%E7%A1%80/</link>
+      <pubDate>Tue, 25 Jul 2023 02:13:11 +0800</pubDate>
+      
+      <guid>http://example.org/posts/javascript%E5%9F%BA%E7%A1%80/</guid>
+      <description>1. JavaScript语法 1.1 在HTML中使用JavaScript 在HTML文档的head元素或body元素中，使用script标签，在其中写入JavaScript代码。
+&amp;lt;!DOCTYPE html&amp;gt; &amp;lt;html&amp;gt; &amp;lt;head&amp;gt; &amp;lt;meta charset=&amp;#34;utf-8&amp;#34;&amp;gt; &amp;lt;title&amp;gt;page name&amp;lt;/title&amp;gt; &amp;lt;script&amp;gt; document.write(&amp;#34;Hello World!&amp;#34;); &amp;lt;/script&amp;gt; &amp;lt;/head&amp;gt; &amp;lt;body&amp;gt; &amp;lt;/body&amp;gt; &amp;lt;/html&amp;gt; 也可以把JavaScript代码保存在一个.js文件中，从script标签引用该js文件。
+&amp;lt;script src=&amp;#34;example.js&amp;#34;&amp;gt;&amp;lt;/script&amp;gt; script标签放在body中，会在页面加载的时候就执行，加载速度更快。而放在head中会在被调用的时候才执行，W3C建议放在head中，便于管理。
+1.2 语法 1.2.1 语句 JavaScript语句末尾可以带分号也可以不带分号，但是建议都带。多条语句放在同一行必须要有分号分隔。
+statement statement statement; statement; statement; statement; 注释可以是如下三种方式：
+// comment /* comment */ &amp;lt;!-- comment 1.2.2 变量 变量声明和复制：
+// 声明 var name; // 赋值 name = &amp;#34;john&amp;#34;; // 未声明变量在使用时自动声明 id = &amp;#34;356734573&amp;#34;; JavaScript中不需要声明类型，是一种弱类型语言，可以在任何时候改变变量的数据类型。
+JavaScript有以下几种数据类型：字符串、数值、布尔值、数组、对象。
+字符串
+字符串由单引号或双引号包含起来。
+var a = &amp;#39;fdsfsd&amp;#39;; var b = &amp;#34;dsfsg&amp;#34;; // 字符串拼接 a = &amp;#34;asd&amp;#34; + &amp;#34;33r&amp;#34;; a += &amp;#34;hehe&amp;#34;; 数值</description>
+    </item>
+    
+    <item>
+      <title>HTML基础知识</title>
+      <link>http://example.org/posts/html%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</link>
+      <pubDate>Tue, 25 Jul 2023 02:12:48 +0800</pubDate>
+      
+      <guid>http://example.org/posts/html%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</guid>
+      <description>1. HTML简介 HTML是用来描述网页的一种语言，全称超文本标记语言(Hyper Text Markup Language)，它是一种标记语言，使用标记标签来描述网页，它的语法规则可以定义图片、表格、链接等。
+1.1 一个基础例子 一个基础的HTML例子：
+&amp;lt;!DOCTYPE html&amp;gt; &amp;lt;html&amp;gt; &amp;lt;head&amp;gt; &amp;lt;meta charset=&amp;#34;utf-8&amp;#34;&amp;gt; &amp;lt;title&amp;gt;page name&amp;lt;/title&amp;gt; &amp;lt;/head&amp;gt; &amp;lt;body&amp;gt; &amp;lt;h1&amp;gt;title 1&amp;lt;/h1&amp;gt; &amp;lt;h2&amp;gt;sub title&amp;lt;/h2&amp;gt; &amp;lt;p&amp;gt;paragraph text&amp;lt;/p&amp;gt; &amp;lt;h1&amp;gt;title 2&amp;lt;/h1&amp;gt; &amp;lt;p&amp;gt;paragraph text&amp;lt;/p&amp;gt; &amp;lt;/body&amp;gt; &amp;lt;/html&amp;gt; 整个文件由html标签包着，其中由分为首部和主体两部分，分别用head标签和body标签包裹。
+首部告诉浏览器关于网页的信息，如页面标题，首部包括&amp;lt;head&amp;gt;和&amp;lt;/head&amp;gt;之间的所有内容。其中的title标签定义了网页的标题，meta标签指定了字符编码。
+主体包含网页的所有内容和结构，也就是在浏览器直接看到的部分，主体包括&amp;lt;body&amp;gt;和&amp;lt;/body&amp;gt;之间的所有内容。其中的h1标签和h2标签分别是一级标题和二级标题，p标签则是段落。
+保存为HTML文件，在浏览器打开后，页面效果如下：
+此外，还可以在HTML的首部里增加一些样式，就是style标签。style标签有一个可选的属性type，一般指定为&amp;quot;text/css&amp;quot;。
+&amp;lt;!DOCTYPE html&amp;gt; &amp;lt;html&amp;gt; &amp;lt;head&amp;gt; &amp;lt;meta charset=&amp;#34;utf-8&amp;#34;&amp;gt; &amp;lt;title&amp;gt;page name&amp;lt;/title&amp;gt; &amp;lt;style type=&amp;#34;text/css&amp;#34;&amp;gt; body { background-color: #d2b48c; margin-left: 20%; margin-right: 20%; border: 2px dotted black; padding: 10px 10px 10px 10px; font-family: sans-serif; } &amp;lt;/style&amp;gt; &amp;lt;/head&amp;gt; &amp;lt;body&amp;gt; &amp;lt;h1&amp;gt;title 1&amp;lt;/h1&amp;gt; &amp;lt;h2&amp;gt;sub title&amp;lt;/h2&amp;gt; &amp;lt;p&amp;gt;paragraph text&amp;lt;/p&amp;gt; &amp;lt;h1&amp;gt;title 2&amp;lt;/h1&amp;gt; &amp;lt;p&amp;gt;paragraph text&amp;lt;/p&amp;gt; &amp;lt;/body&amp;gt; &amp;lt;/html&amp;gt; style标签中的body表示这段配置应用于主体中的body标签。</description>
+    </item>
+    
+    <item>
+      <title>CSS基础知识</title>
+      <link>http://example.org/posts/css%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</link>
+      <pubDate>Tue, 25 Jul 2023 02:12:26 +0800</pubDate>
+      
+      <guid>http://example.org/posts/css%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</guid>
+      <description>1. CSS简介 CSS全称层叠样式表（Cascading Style Sheets），用于描述HTML文档样式。可以写在HTML文档的style标签中，也可以保存在.css文件中被引用。
+1.1 语法 CSS规则集由选择器和声明块组成，选择器指向需要设置样式的HTML元素，声明块包含若干条用分号分割的声明，每条声明由一个CSS属性和一个值组成。
+以上图片例子对应如下代码：
+p { color: red; font-size: 14px; } 注释用/*和*/包裹，可以跨多行。
+/*comment*/ 1.2 选择器 选择器用于查找要设置样式的HTML元素，分为以下五类：
+简单选择器：根据标签、id、类选取 组合器选择器：根据它们之间的特定关系选取 伪类选择器：根据特定状态选取 伪元素选择器：选取元素的一部分设置样式 属性选择器：根据属性或属性值选取 以下为基本的简单选择器：
+元素选择器
+根据标签名称选择元素。
+p {} id选择器
+选择特定id的元素。
+#id {} 类选择器
+选择特定类的元素。
+.class {} 也可以指定特定标签中的特定类。
+p.class {} 通用选择器
+选择所有元素。
+* {} 分组选择器
+选择多种条件组合应用同样的样式，减少重复代码。
+p, .c1, #id1 {} 后代选择器
+选择指定元素后代中的所有标签。
+div p {} 子选择器
+选择属于指定元素子元素的所有标签。
+div &amp;gt; p {} :hover选择器
+鼠标指针移到元素上时的样式。
+a:hover { background-color:yellow; } 2. 颜色 颜色可以用多种方式来指定，以下为Tomato对应的不同颜色表示方法和值：</description>
+    </item>
+    
+  </channel>
+</rss>

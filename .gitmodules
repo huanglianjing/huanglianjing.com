@@ -7,3 +7,9 @@
 [submodule "themes/papermod"]
 	path = themes/papermod
 	url = https://github.com/adityatelange/hugo-PaperMod.git
+[submodule "themes/eureka"]
+	path = themes/eureka
+	url = https://github.com/wangchucheng/hugo-eureka.git
+[submodule "themes/mainroad"]
+	path = themes/mainroad
+	url = https://github.com/Vimux/Mainroad.git

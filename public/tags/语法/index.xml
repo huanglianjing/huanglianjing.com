@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>语法 on My New Hugo Site</title>
+    <link>http://example.org/tags/%E8%AF%AD%E6%B3%95/</link>
+    <description>Recent content in 语法 on My New Hugo Site</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 16 Jul 2023 18:17:33 +0800</lastBuildDate><atom:link href="http://example.org/tags/%E8%AF%AD%E6%B3%95/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Go基础语法</title>
+      <link>http://example.org/posts/go%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95/</link>
+      <pubDate>Sun, 16 Jul 2023 18:17:33 +0800</pubDate>
+      
+      <guid>http://example.org/posts/go%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95/</guid>
+      <description>1. 程序结构 1.1 名称 Go中函数、变量、常量、类型、语句标签、包的名称遵循规则：开头是一个字母或下划线，后面可以跟任意数量的字符、数字和下划线，并区分大小写。
+对于语法中需要有变量名但程序逻辑用不到的，可以直接以一个下划线_表示空标识符。
+关键字
+Go有25个关键字，不能用于定义名称。
+break default func interface select case defer go map struct chan else goto package switch const fallthrough if range type continue for import return var 内置的预声明的常量、类型、函数
+常量 true false itoa nil 类型 int int8 int16 int32 int64 uint uint8 uint16 uint32 uint64 uintptr float32 float64 complex64 complex128 bool byte rune string error 函数 make len cap new append copy close delete complex real imag panic recover 1.</description>
+    </item>
+    
+  </channel>
+</rss>

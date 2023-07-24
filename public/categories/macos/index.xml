@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>macOS on My New Hugo Site</title>
+    <link>http://example.org/categories/macos/</link>
+    <description>Recent content in macOS on My New Hugo Site</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 25 Jul 2023 02:11:23 +0800</lastBuildDate><atom:link href="http://example.org/categories/macos/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>macOS快捷键与常用软件</title>
+      <link>http://example.org/posts/macos%E5%BF%AB%E6%8D%B7%E9%94%AE%E4%B8%8E%E5%B8%B8%E7%94%A8%E8%BD%AF%E4%BB%B6/</link>
+      <pubDate>Tue, 25 Jul 2023 02:11:23 +0800</pubDate>
+      
+      <guid>http://example.org/posts/macos%E5%BF%AB%E6%8D%B7%E9%94%AE%E4%B8%8E%E5%B8%B8%E7%94%A8%E8%BD%AF%E4%BB%B6/</guid>
+      <description>1. macOS快捷键 1.1 按键符号 ⌘ (command) ⌥ (option) ⇧ (shift) ⌃ (control) ↩ (enter) ⌫ (delete) tab space ← → ↑ ↓ 1.2 快捷键 1.2.1 程序 ⌘ + tab 切换程序
+⌘ + ` 切换同一个程序不同窗口
+⌘ + Q 关闭程序
+⌘ + W 关闭窗口
+⌘ + N 打开新窗口
+⌘ + T 打开新tab
+⌘ + M 最小化
+⌘ + H 隐藏窗口
+⌘ + , 设置
+⌘ + ⌫ 删除文件
+⌘ + space 聚焦搜索</description>
+    </item>
+    
+    <item>
+      <title>Homebrew的安装和使用</title>
+      <link>http://example.org/posts/homebrew%E7%9A%84%E5%AE%89%E8%A3%85%E5%92%8C%E4%BD%BF%E7%94%A8/</link>
+      <pubDate>Tue, 25 Jul 2023 02:10:50 +0800</pubDate>
+      
+      <guid>http://example.org/posts/homebrew%E7%9A%84%E5%AE%89%E8%A3%85%E5%92%8C%E4%BD%BF%E7%94%A8/</guid>
+      <description>1. 简介 Homebrew 是 macOS 上的一个软件包管理工具，能很方便地安装很多软件包。
+官方网站：https://brew.sh/
+Homebrew 安装软件时，会先将安装包下载到指定目录，对于非 root 用户会保存在 ~/Library/Caches/Homebrew，对于 root 用户会保存在 /Library/Caches/Homebrew。
+然后会将软件安装在 /usr/local/Cellar/ 目录下，再将可执行文件以软链接文件的方式保存在 /usr/local/bin/ 目录下，该目录属于默认 $PATH，所以安装软件后直接输入软件名称就可以执行命令。
+2. 安装与配置 安装 Homebrew 只需要执行以下命令，将会获取到安装脚本然后执行：
+/bin/bash -c &amp;#34;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)&amp;#34; 默认源访问速度较慢，替换为中科大源：
+# homebrew目录 cd &amp;#34;$(brew --repo)&amp;#34; git remote -v git remote set-url origin https://mirrors.ustc.edu.cn/brew.git git remote -v # core目录 cd &amp;#34;$(brew --repo)/Library/Taps/homebrew/homebrew-core&amp;#34; git remote -v git remote set-url origin https://mirrors.ustc.edu.cn/homebrew-core.git git remote -v 3. 使用命令 更新 Homebrew 至最新：
+brew update 支持的所有软件列表：</description>
+    </item>
+    
+  </channel>
+</rss>

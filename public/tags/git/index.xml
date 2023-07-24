@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Git on My New Hugo Site</title>
+    <link>http://example.org/tags/git/</link>
+    <description>Recent content in Git on My New Hugo Site</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 16 Jul 2023 19:02:11 +0800</lastBuildDate><atom:link href="http://example.org/tags/git/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Git基础概念与常用命令</title>
+      <link>http://example.org/posts/git%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E4%B8%8E%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/</link>
+      <pubDate>Sun, 16 Jul 2023 19:02:11 +0800</pubDate>
+      
+      <guid>http://example.org/posts/git%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E4%B8%8E%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/</guid>
+      <description>1. 基础概念 仓库
+每个项目整个文件夹称为一个仓库repository，仓库中包含零到多个文件，仓库的改动由链状的提交commit所表示，这些提交又分布在不同的分支branch上。每个仓库都有一个起始默认的仓库master/main，然后新建和删除不同的分支，分支之间可以相互合并，以达到多人共同开发同一个项目。
+HEAD表示当前指向的提交。
+远程仓库
+origin表示远程仓库，每个仓库包含本地仓库和对应的远程仓库，例如对应为dev和origin/dev，可以从远程仓库分支拉取更新到本地，以及将本地提交的修改推送到远程分支。
+1.1 文件状态 对于Git项目，仓库文件夹中的文件有如下几种状态：
+untracked/未追踪
+未追踪的文件就是临时存在当前仓库文件夹中，但是并未包含在仓库中的文件，一般是新增的准备加入仓库中的文件，或是产生的日志文件等临时文件。
+未追踪的文件如果不想加到仓库中，而且也不想通过 git status 看到，可以将文件规则加到.gitignore文件中。
+如果是需要加到仓库中的文件，通过 git add 可以将文件变为暂存状态，然后就可以提交到仓库中。
+unmodified/未修改
+存在仓库中的所有文件，如果本地文件未被修改，则是未修改的状态。
+通过 git status 无法看到未修改的文件，但是可以看到哪些文件是属于已修改和暂存状态的。
+modified/已修改
+存在仓库中的文件，修改后，就会变成已修改状态，已修改的文件所在称为工作区。
+通过 git add 可以将已修改的文件转成暂存状态，而 git checkout &amp;ndash; file 则将文件修改撤销，变为未修改状态。
+staged/暂存
+仓库文件转位暂存状态后，就是可以准备提交的状态了，暂存的文件所处暂存区。
+通过 git commit 可以将所有暂存的文件提交，文件再次变为未修改状态，而 git reset HEAD file 则会将暂存的文件退回到已修改状态。
+从上图中可以看到仓库文件的状态流转。不属于仓库的文件是 untracked 状态，属于仓库的文件是 unmodified 状态，作出更改后变为modified状态，将这些文件添加到暂存区就变成了 staged 状态，最后通过提交更新，将暂存区的文件提交到仓库，又变成了 unmodified 状态。
+2. 配置 2.1 GitHub配置密钥 首先在本机创建SSH key，生成的key将会存在于~/.ssh/id_rsa.pub：
+$ ssh-keygen -t rsa -C &amp;#34;email@example.com&amp;#34; 在GitHub打开setting，选择添加SSH Key，然后粘贴id_rsa.</description>
+    </item>
+    
+  </channel>
+</rss>
