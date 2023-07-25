@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Go标准库：reflect | huanglianjing</title>
+<meta name="keywords" content="Go">
+<meta name="description" content="1. 介绍 文档地址：https://pkg.go.dev/reflect
+Go 标准库 reflect 用于运行时的映射，使程序运行时可以检查和操纵任意类型的对象。例如，在运行时获取一个任意类型 interface{} 的对象，并获取它的动态类型。
+获取对象的类型并使用不同的取值方法：
+for _, v := range []any{&#34;hi&#34;, 42, func() {}} { switch v := reflect.ValueOf(v); v.Kind() { case reflect.String: fmt.Println(v.String()) case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64: fmt.Println(v.Int()) default: fmt.Printf(&#34;unhandled kind %s&#34;, v.Kind()) } } 获取变量的类型：
+var x int typ := reflect.TypeOf(x) fmt.Println(typ) 根据函数名调用对应函数：
+func add(a int, b int) int { return a &#43; b } var FuncMap = map[string]interface{}{ &#34;add&#34;: add, } funcName := &#34;add&#34; f := reflect.">
+<meta name="author" content="">
+<link rel="canonical" href="http://huanglianjing.com/posts/go%E6%A0%87%E5%87%86%E5%BA%93reflect/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.3613efbd0b1772781e8f49935e973cae632a7f61471c05b17be155505ccf87b5.css" integrity="sha256-NhPvvQsXcngej0mTXpc8rmMqf2FHHAWxe&#43;FVUFzPh7U=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="http://huanglianjing.com/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://huanglianjing.com/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://huanglianjing.com/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://huanglianjing.com/apple-touch-icon.png">
+<link rel="mask-icon" href="http://huanglianjing.com/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="Go标准库：reflect" />
+<meta property="og:description" content="1. 介绍 文档地址：https://pkg.go.dev/reflect
+Go 标准库 reflect 用于运行时的映射，使程序运行时可以检查和操纵任意类型的对象。例如，在运行时获取一个任意类型 interface{} 的对象，并获取它的动态类型。
+获取对象的类型并使用不同的取值方法：
+for _, v := range []any{&#34;hi&#34;, 42, func() {}} { switch v := reflect.ValueOf(v); v.Kind() { case reflect.String: fmt.Println(v.String()) case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64: fmt.Println(v.Int()) default: fmt.Printf(&#34;unhandled kind %s&#34;, v.Kind()) } } 获取变量的类型：
+var x int typ := reflect.TypeOf(x) fmt.Println(typ) 根据函数名调用对应函数：
+func add(a int, b int) int { return a &#43; b } var FuncMap = map[string]interface{}{ &#34;add&#34;: add, } funcName := &#34;add&#34; f := reflect." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://huanglianjing.com/posts/go%E6%A0%87%E5%87%86%E5%BA%93reflect/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-07-25T01:51:34+08:00" />
+<meta property="article:modified_time" content="2023-07-25T01:51:34+08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Go标准库：reflect"/>
+<meta name="twitter:description" content="1. 介绍 文档地址：https://pkg.go.dev/reflect
+Go 标准库 reflect 用于运行时的映射，使程序运行时可以检查和操纵任意类型的对象。例如，在运行时获取一个任意类型 interface{} 的对象，并获取它的动态类型。
+获取对象的类型并使用不同的取值方法：
+for _, v := range []any{&#34;hi&#34;, 42, func() {}} { switch v := reflect.ValueOf(v); v.Kind() { case reflect.String: fmt.Println(v.String()) case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64: fmt.Println(v.Int()) default: fmt.Printf(&#34;unhandled kind %s&#34;, v.Kind()) } } 获取变量的类型：
+var x int typ := reflect.TypeOf(x) fmt.Println(typ) 根据函数名调用对应函数：
+func add(a int, b int) int { return a &#43; b } var FuncMap = map[string]interface{}{ &#34;add&#34;: add, } funcName := &#34;add&#34; f := reflect."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://huanglianjing.com/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Go标准库：reflect",
+      "item": "http://huanglianjing.com/posts/go%E6%A0%87%E5%87%86%E5%BA%93reflect/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Go标准库：reflect",
+  "name": "Go标准库：reflect",
+  "description": "1. 介绍 文档地址：https://pkg.go.dev/reflect\nGo 标准库 reflect 用于运行时的映射，使程序运行时可以检查和操纵任意类型的对象。例如，在运行时获取一个任意类型 interface{} 的对象，并获取它的动态类型。\n获取对象的类型并使用不同的取值方法：\nfor _, v := range []any{\u0026#34;hi\u0026#34;, 42, func() {}} { switch v := reflect.ValueOf(v); v.Kind() { case reflect.String: fmt.Println(v.String()) case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64: fmt.Println(v.Int()) default: fmt.Printf(\u0026#34;unhandled kind %s\u0026#34;, v.Kind()) } } 获取变量的类型：\nvar x int typ := reflect.TypeOf(x) fmt.Println(typ) 根据函数名调用对应函数：\nfunc add(a int, b int) int { return a + b } var FuncMap = map[string]interface{}{ \u0026#34;add\u0026#34;: add, } funcName := \u0026#34;add\u0026#34; f := reflect.",
+  "keywords": [
+    "Go"
+  ],
+  "articleBody": "1. 介绍 文档地址：https://pkg.go.dev/reflect\nGo 标准库 reflect 用于运行时的映射，使程序运行时可以检查和操纵任意类型的对象。例如，在运行时获取一个任意类型 interface{} 的对象，并获取它的动态类型。\n获取对象的类型并使用不同的取值方法：\nfor _, v := range []any{\"hi\", 42, func() {}} { switch v := reflect.ValueOf(v); v.Kind() { case reflect.String: fmt.Println(v.String()) case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64: fmt.Println(v.Int()) default: fmt.Printf(\"unhandled kind %s\", v.Kind()) } } 获取变量的类型：\nvar x int typ := reflect.TypeOf(x) fmt.Println(typ) 根据函数名调用对应函数：\nfunc add(a int, b int) int { return a + b } var FuncMap = map[string]interface{}{ \"add\": add, } funcName := \"add\" f := reflect.ValueOf(FuncMap[funcName]) args := []reflect.Value{ reflect.ValueOf(1), reflect.ValueOf(2), } ret := f.Call(args) i := ret[0].Int() 根据方法名调用对应方法，需要注意方法需要是可导出方法才能被反射调用：\ntype People struct { name string } func (p *People) SetName(s string) { p.name = s } func (p *People) GetName() string { return p.name } p := People{} setFunc := reflect.ValueOf(\u0026p).MethodByName(\"SetName\") args := []reflect.Value{reflect.ValueOf(\"moondo\")} setFunc.Call(args) getFunc := reflect.ValueOf(\u0026p).MethodByName(\"GetName\") name := getFunc.Call([]reflect.Value{})[0].String() 获取结构体成员的标签：\ntype S struct { F string `species:\"gopher\" color:\"blue\"` } s := S{} st := reflect.TypeOf(s) field := st.Field(0) fmt.Println(field.Tag.Get(\"color\"), field.Tag.Get(\"species\")) 2. 常量 const Ptr = Pointer 3. 类型 3.1 Kind 类型定义：\n// Kind 类型 type Kind uint const ( Invalid Kind = iota Bool Int Int8 Int16 Int32 Int64 Uint Uint8 Uint16 Uint32 Uint64 Uintptr Float32 Float64 Complex64 Complex128 Array Chan Func Interface Map Pointer Slice String Struct UnsafePointer ) 方法：\n// String 返回类型名称 func (k Kind) String() string 3.2 Type 类型定义：\n// Type 类型的接口 type Type interface { // Align returns the alignment in bytes of a value of // this type when allocated in memory. Align() int // FieldAlign returns the alignment in bytes of a value of // this type when used as a field in a struct. FieldAlign() int // Method returns the i'th method in the type's method set. // Methods are sorted in lexicographic order. Method(int) Method // MethodByName returns the method with that name in the type's // method set and a boolean indicating if the method was found. MethodByName(string) (Method, bool) // NumMethod returns the number of methods accessible using Method. NumMethod() int // Name returns the type's name within its package for a defined type. Name() string // PkgPath returns a defined type's package path. PkgPath() string // Size returns the number of bytes needed to store a value of the given type. Size() uintptr // String returns a string representation of the type. String() string // Kind returns the specific kind of this type. Kind() Kind // Implements reports whether the type implements the interface type u. Implements(u Type) bool // AssignableTo reports whether a value of the type is assignable to type u. AssignableTo(u Type) bool // ConvertibleTo reports whether a value of the type is convertible to type u. ConvertibleTo(u Type) bool // Comparable reports whether values of this type are comparable. Comparable() bool // Bits returns the size of the type in bits. Bits() int // ChanDir returns a channel type's direction. ChanDir() ChanDir // IsVariadic reports whether a function type's final input parameter // is a \"...\" parameter. If so, t.In(t.NumIn() - 1) returns the parameter's // implicit actual type []T. IsVariadic() bool // Elem returns a type's element type. Elem() Type // Field returns a struct type's i'th field. Field(i int) StructField // FieldByIndex returns the nested field corresponding to the index sequence. FieldByIndex(index []int) StructField // FieldByName returns the struct field with the given name // and a boolean indicating if the field was found. FieldByName(name string) (StructField, bool) // FieldByNameFunc returns the struct field with a name // that satisfies the match function and a boolean indicating if // the field was found. FieldByNameFunc(match func(string) bool) (StructField, bool) // In returns the type of a function type's i'th input parameter. In(i int) Type // Key returns a map type's key type. Key() Type // Len returns an array type's length. Len() int // NumField returns a struct type's field count. NumField() int // NumIn returns a function type's input parameter count. NumIn() int // NumOut returns a function type's output parameter count. NumOut() int // Out returns the type of a function type's i'th output parameter. Out(i int) Type } 方法：\n// TypeOf 获取变量的类型 func TypeOf(i any) Type // ArrayOf 给定长度和元素类型的数组的类型 func ArrayOf(length int, elem Type) Type // ChanOf 给定方向和元素类型的通道的类型 func ChanOf(dir ChanDir, t Type) Type // FuncOf 给定参数和返回类型的函数的类型 func FuncOf(in, out []Type, variadic bool) Type // MapOf 给定key和元素类型的map的类型 func MapOf(key, elem Type) Type // PointerTo 给定类型的指针的类型 func PointerTo(t Type) Type // PtrTo 给定类型的指针的类型，等同PointerTo func PtrTo(t Type) Type // SliceOf 给定类型元素的slice的类型 func SliceOf(t Type) Type // StructOf 给定成员类型的结构体的类型 func StructOf(fields []StructField) Type 3.3 Value 类型定义：\n// Value 变量 type Value struct { // contains filtered or unexported fields } 方法：\n// Append 将多个变量x追加到slice s func Append(s Value, x ...Value) Value // AppendSlice 将slice t追加到slice s func AppendSlice(s, t Value) Value // Indirect 返回指针v指向的变量 func Indirect(v Value) Value // MakeChan 创建不同的类型 func MakeChan(typ Type, buffer int) Value func MakeFunc(typ Type, fn func(args []Value) (results []Value)) Value func MakeMap(typ Type) Value func MakeMapWithSize(typ Type, n int) Value func MakeSlice(typ Type, len, cap int) Value // New 创建指定类型的空指针 func New(typ Type) Value // NewAt 创建指针并指向p func NewAt(typ Type, p unsafe.Pointer) Value // ValueOf 创建变量并用i初始化 func ValueOf(i any) Value // Zero 创建指定类型变量并赋空值 func Zero(typ Type) Value // Call 本身是一个函数，调用自己，传入in作为参数列表 func (v Value) Call(in []Value) []Value // 还包括类型Value的许多方法，如判断能否转化为各种类型、设置各种类型的值、转为各种类型的值等 3.4 Method 类型定义：\n// Method 方法 type Method struct { Name string // method name PkgPath string // 对非导出的方法是包路径，对可导出的方法为空 Type Type // method type Func Value // func with receiver as first argument Index int // index for Type.Method } 方法：\n// IsExported 是否可导出（首字母大写） func (m Method) IsExported() bool 3.5 StructField 类型定义：\n// StructField 结构体的某个成员 type StructField struct { Name string // field name PkgPath string // 对非导出的成员是包路径，对可导出的成员为空 Type Type // field type Tag StructTag // field tag string Offset uintptr // offset within struct, in bytes Index []int // index sequence for Type.FieldByIndex Anonymous bool // is an embedded field } 方法：\n// VisibleFields 返回可见的成员列表 func VisibleFields(t Type) []StructField // IsExported 是否可导出（首字母大写） func (f StructField) IsExported() bool 3.6 StructTag 类型定义：\n// StructTag 结构体成员的标签 type StructTag string 方法：\n// Get 获取标签对应key的值，key不存在返回空字符串 func (tag StructTag) Get(key string) string // Lookup 获取标签对应key的值以及key是否存在 func (tag StructTag) Lookup(key string) (value string, ok bool) 3.7 MapIter 类型定义：\n// MapIter map遍历的迭代器 type MapIter struct { // contains filtered or unexported fields } 方法：\n// Key 返回迭代器当前位置的key func (iter *MapIter) Key() Value // Value 返回迭代器当前位置的value func (iter *MapIter) Value() Value // Next 迭代器指向下一个元素，返回false表示遍历到尽头了 func (iter *MapIter) Next() bool // Reset 将迭代器指向另一个map func (iter *MapIter) Reset(v Value) 3.8 其他类型 类型定义：\n// ChanDir 通道类型的方向 type ChanDir int const ( RecvDir ChanDir = 1 \u003c\u003c iota // \u003c-chan SendDir // chan\u003c- BothDir = RecvDir | SendDir // chan ) // SelectCase select语句中的某个case type SelectCase struct { Dir SelectDir // direction of case Chan Value // channel to use (for send or receive) Send Value // value to send (for send) } // SelectDir 一个SelectCase的通信方向 type SelectDir int const ( SelectSend SelectDir // case Chan \u003c- Send SelectRecv // case \u003c-Chan: SelectDefault // default ) // SliceHeader 运行时的slice type SliceHeader struct { Data uintptr Len int Cap int } // StringHeader 运行时的string type StringHeader struct { Data uintptr Len int } 4. 函数 // Copy 变量复制，两个参数必须是同样元素类型的slice或数组，返回复制的元素个数 func Copy(dst, src Value) int // DeepEqual 比较参数是否深度相等，对于函数同样是nil才是深度相等 func DeepEqual(x, y any) bool // Swapper 返回一个函数，执行这个函数将调换现在的参数slice中的对应索引的元素 func Swapper(slice any) func(i, j int) ",
+  "wordCount" : "1200",
+  "inLanguage": "en",
+  "datePublished": "2023-07-25T01:51:34+08:00",
+  "dateModified": "2023-07-25T01:51:34+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://huanglianjing.com/posts/go%E6%A0%87%E5%87%86%E5%BA%93reflect/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "huanglianjing",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://huanglianjing.com/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://huanglianjing.com/" accesskey="h" title="huanglianjing (Alt + H)">huanglianjing</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://huanglianjing.com/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://huanglianjing.com/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      Go标准库：reflect
+    </h1>
+    <div class="post-meta"><span title='2023-07-25 01:51:34 +0800 CST'>July 25, 2023</span>
+
+</div>
+  </header> 
+  <div class="post-content"><h1 id="1-介绍">1. 介绍<a hidden class="anchor" aria-hidden="true" href="#1-介绍">#</a></h1>
+<p>文档地址：https://pkg.go.dev/reflect</p>
+<p>Go 标准库 reflect 用于运行时的映射，使程序运行时可以检查和操纵任意类型的对象。例如，在运行时获取一个任意类型 interface{} 的对象，并获取它的动态类型。</p>
+<p>获取对象的类型并使用不同的取值方法：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">v</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> []<span style="color:#a6e22e">any</span>{<span style="color:#e6db74">&#34;hi&#34;</span>, <span style="color:#ae81ff">42</span>, <span style="color:#66d9ef">func</span>() {}} {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">switch</span> <span style="color:#a6e22e">v</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">reflect</span>.<span style="color:#a6e22e">ValueOf</span>(<span style="color:#a6e22e">v</span>); <span style="color:#a6e22e">v</span>.<span style="color:#a6e22e">Kind</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">reflect</span>.<span style="color:#a6e22e">String</span>:
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">v</span>.<span style="color:#a6e22e">String</span>())
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">reflect</span>.<span style="color:#a6e22e">Int</span>, <span style="color:#a6e22e">reflect</span>.<span style="color:#a6e22e">Int8</span>, <span style="color:#a6e22e">reflect</span>.<span style="color:#a6e22e">Int16</span>, <span style="color:#a6e22e">reflect</span>.<span style="color:#a6e22e">Int32</span>, <span style="color:#a6e22e">reflect</span>.<span style="color:#a6e22e">Int64</span>:
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">v</span>.<span style="color:#a6e22e">Int</span>())
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">default</span>:
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;unhandled kind %s&#34;</span>, <span style="color:#a6e22e">v</span>.<span style="color:#a6e22e">Kind</span>())
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>获取变量的类型：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">x</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">typ</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">reflect</span>.<span style="color:#a6e22e">TypeOf</span>(<span style="color:#a6e22e">x</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">typ</span>)
+</span></span></code></pre></div><p>根据函数名调用对应函数：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">add</span>(<span style="color:#a6e22e">a</span> <span style="color:#66d9ef">int</span>, <span style="color:#a6e22e">b</span> <span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">int</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">a</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">b</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">FuncMap</span> = <span style="color:#66d9ef">map</span>[<span style="color:#66d9ef">string</span>]<span style="color:#66d9ef">interface</span>{}{
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;add&#34;</span>:   <span style="color:#a6e22e">add</span>,
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">funcName</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;add&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">f</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">reflect</span>.<span style="color:#a6e22e">ValueOf</span>(<span style="color:#a6e22e">FuncMap</span>[<span style="color:#a6e22e">funcName</span>])
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">args</span> <span style="color:#f92672">:=</span> []<span style="color:#a6e22e">reflect</span>.<span style="color:#a6e22e">Value</span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">reflect</span>.<span style="color:#a6e22e">ValueOf</span>(<span style="color:#ae81ff">1</span>),
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">reflect</span>.<span style="color:#a6e22e">ValueOf</span>(<span style="color:#ae81ff">2</span>),
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">ret</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">f</span>.<span style="color:#a6e22e">Call</span>(<span style="color:#a6e22e">args</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ret</span>[<span style="color:#ae81ff">0</span>].<span style="color:#a6e22e">Int</span>()
+</span></span></code></pre></div><p>根据方法名调用对应方法，需要注意方法需要是可导出方法才能被反射调用：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">People</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">name</span> <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">p</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">People</span>) <span style="color:#a6e22e">SetName</span>(<span style="color:#a6e22e">s</span> <span style="color:#66d9ef">string</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">name</span> = <span style="color:#a6e22e">s</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">p</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">People</span>) <span style="color:#a6e22e">GetName</span>() <span style="color:#66d9ef">string</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">name</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">p</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">People</span>{}
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">setFunc</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">reflect</span>.<span style="color:#a6e22e">ValueOf</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">p</span>).<span style="color:#a6e22e">MethodByName</span>(<span style="color:#e6db74">&#34;SetName&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">args</span> <span style="color:#f92672">:=</span> []<span style="color:#a6e22e">reflect</span>.<span style="color:#a6e22e">Value</span>{<span style="color:#a6e22e">reflect</span>.<span style="color:#a6e22e">ValueOf</span>(<span style="color:#e6db74">&#34;moondo&#34;</span>)}
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">setFunc</span>.<span style="color:#a6e22e">Call</span>(<span style="color:#a6e22e">args</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">getFunc</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">reflect</span>.<span style="color:#a6e22e">ValueOf</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">p</span>).<span style="color:#a6e22e">MethodByName</span>(<span style="color:#e6db74">&#34;GetName&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">name</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">getFunc</span>.<span style="color:#a6e22e">Call</span>([]<span style="color:#a6e22e">reflect</span>.<span style="color:#a6e22e">Value</span>{})[<span style="color:#ae81ff">0</span>].<span style="color:#a6e22e">String</span>()
+</span></span></code></pre></div><p>获取结构体成员的标签：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">S</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">F</span> <span style="color:#66d9ef">string</span> <span style="color:#e6db74">`species:&#34;gopher&#34; color:&#34;blue&#34;`</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">s</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">S</span>{}
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">st</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">reflect</span>.<span style="color:#a6e22e">TypeOf</span>(<span style="color:#a6e22e">s</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">field</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">st</span>.<span style="color:#a6e22e">Field</span>(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">field</span>.<span style="color:#a6e22e">Tag</span>.<span style="color:#a6e22e">Get</span>(<span style="color:#e6db74">&#34;color&#34;</span>), <span style="color:#a6e22e">field</span>.<span style="color:#a6e22e">Tag</span>.<span style="color:#a6e22e">Get</span>(<span style="color:#e6db74">&#34;species&#34;</span>))
+</span></span></code></pre></div><h1 id="2-常量">2. 常量<a hidden class="anchor" aria-hidden="true" href="#2-常量">#</a></h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">Ptr</span> = <span style="color:#a6e22e">Pointer</span>
+</span></span></code></pre></div><h1 id="3-类型">3. 类型<a hidden class="anchor" aria-hidden="true" href="#3-类型">#</a></h1>
+<h2 id="31-kind">3.1 Kind<a hidden class="anchor" aria-hidden="true" href="#31-kind">#</a></h2>
+<p>类型定义：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// Kind 类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Kind</span> <span style="color:#66d9ef">uint</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Invalid</span> <span style="color:#a6e22e">Kind</span> = <span style="color:#66d9ef">iota</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Bool</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Int</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Int8</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Int16</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Int32</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Int64</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Uint</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Uint8</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Uint16</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Uint32</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Uint64</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Uintptr</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Float32</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Float64</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Complex64</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Complex128</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Array</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Chan</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Func</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Interface</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Map</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Pointer</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Slice</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">String</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Struct</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">UnsafePointer</span>
+</span></span><span style="display:flex;"><span>)
+</span></span></code></pre></div><p>方法：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// String 返回类型名称
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">k</span> <span style="color:#a6e22e">Kind</span>) <span style="color:#a6e22e">String</span>() <span style="color:#66d9ef">string</span>
+</span></span></code></pre></div><h2 id="32-type">3.2 Type<a hidden class="anchor" aria-hidden="true" href="#32-type">#</a></h2>
+<p>类型定义：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// Type 类型的接口
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Type</span> <span style="color:#66d9ef">interface</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// Align returns the alignment in bytes of a value of
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">// this type when allocated in memory.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Align</span>() <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// FieldAlign returns the alignment in bytes of a value of
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">// this type when used as a field in a struct.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">FieldAlign</span>() <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// Method returns the i&#39;th method in the type&#39;s method set.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">// Methods are sorted in lexicographic order.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Method</span>(<span style="color:#66d9ef">int</span>) <span style="color:#a6e22e">Method</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// MethodByName returns the method with that name in the type&#39;s
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">// method set and a boolean indicating if the method was found.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">MethodByName</span>(<span style="color:#66d9ef">string</span>) (<span style="color:#a6e22e">Method</span>, <span style="color:#66d9ef">bool</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// NumMethod returns the number of methods accessible using Method.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">NumMethod</span>() <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// Name returns the type&#39;s name within its package for a defined type.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Name</span>() <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// PkgPath returns a defined type&#39;s package path.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">PkgPath</span>() <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// Size returns the number of bytes needed to store a value of the given type.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Size</span>() <span style="color:#66d9ef">uintptr</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// String returns a string representation of the type.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">String</span>() <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// Kind returns the specific kind of this type.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Kind</span>() <span style="color:#a6e22e">Kind</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// Implements reports whether the type implements the interface type u.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Implements</span>(<span style="color:#a6e22e">u</span> <span style="color:#a6e22e">Type</span>) <span style="color:#66d9ef">bool</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// AssignableTo reports whether a value of the type is assignable to type u.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">AssignableTo</span>(<span style="color:#a6e22e">u</span> <span style="color:#a6e22e">Type</span>) <span style="color:#66d9ef">bool</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// ConvertibleTo reports whether a value of the type is convertible to type u.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">ConvertibleTo</span>(<span style="color:#a6e22e">u</span> <span style="color:#a6e22e">Type</span>) <span style="color:#66d9ef">bool</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// Comparable reports whether values of this type are comparable.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Comparable</span>() <span style="color:#66d9ef">bool</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// Bits returns the size of the type in bits.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Bits</span>() <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// ChanDir returns a channel type&#39;s direction.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">ChanDir</span>() <span style="color:#a6e22e">ChanDir</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// IsVariadic reports whether a function type&#39;s final input parameter
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">// is a &#34;...&#34; parameter. If so, t.In(t.NumIn() - 1) returns the parameter&#39;s
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">// implicit actual type []T.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">IsVariadic</span>() <span style="color:#66d9ef">bool</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// Elem returns a type&#39;s element type.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Elem</span>() <span style="color:#a6e22e">Type</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// Field returns a struct type&#39;s i&#39;th field.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Field</span>(<span style="color:#a6e22e">i</span> <span style="color:#66d9ef">int</span>) <span style="color:#a6e22e">StructField</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// FieldByIndex returns the nested field corresponding to the index sequence.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">FieldByIndex</span>(<span style="color:#a6e22e">index</span> []<span style="color:#66d9ef">int</span>) <span style="color:#a6e22e">StructField</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// FieldByName returns the struct field with the given name
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">// and a boolean indicating if the field was found.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">FieldByName</span>(<span style="color:#a6e22e">name</span> <span style="color:#66d9ef">string</span>) (<span style="color:#a6e22e">StructField</span>, <span style="color:#66d9ef">bool</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// FieldByNameFunc returns the struct field with a name
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">// that satisfies the match function and a boolean indicating if
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">// the field was found.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">FieldByNameFunc</span>(<span style="color:#a6e22e">match</span> <span style="color:#66d9ef">func</span>(<span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">bool</span>) (<span style="color:#a6e22e">StructField</span>, <span style="color:#66d9ef">bool</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// In returns the type of a function type&#39;s i&#39;th input parameter.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">In</span>(<span style="color:#a6e22e">i</span> <span style="color:#66d9ef">int</span>) <span style="color:#a6e22e">Type</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// Key returns a map type&#39;s key type.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Key</span>() <span style="color:#a6e22e">Type</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// Len returns an array type&#39;s length.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Len</span>() <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// NumField returns a struct type&#39;s field count.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">NumField</span>() <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// NumIn returns a function type&#39;s input parameter count.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">NumIn</span>() <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// NumOut returns a function type&#39;s output parameter count.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">NumOut</span>() <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// Out returns the type of a function type&#39;s i&#39;th output parameter.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Out</span>(<span style="color:#a6e22e">i</span> <span style="color:#66d9ef">int</span>) <span style="color:#a6e22e">Type</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>方法：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// TypeOf 获取变量的类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">TypeOf</span>(<span style="color:#a6e22e">i</span> <span style="color:#a6e22e">any</span>) <span style="color:#a6e22e">Type</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// ArrayOf 给定长度和元素类型的数组的类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">ArrayOf</span>(<span style="color:#a6e22e">length</span> <span style="color:#66d9ef">int</span>, <span style="color:#a6e22e">elem</span> <span style="color:#a6e22e">Type</span>) <span style="color:#a6e22e">Type</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// ChanOf 给定方向和元素类型的通道的类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">ChanOf</span>(<span style="color:#a6e22e">dir</span> <span style="color:#a6e22e">ChanDir</span>, <span style="color:#a6e22e">t</span> <span style="color:#a6e22e">Type</span>) <span style="color:#a6e22e">Type</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// FuncOf 给定参数和返回类型的函数的类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">FuncOf</span>(<span style="color:#a6e22e">in</span>, <span style="color:#a6e22e">out</span> []<span style="color:#a6e22e">Type</span>, <span style="color:#a6e22e">variadic</span> <span style="color:#66d9ef">bool</span>) <span style="color:#a6e22e">Type</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// MapOf 给定key和元素类型的map的类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">MapOf</span>(<span style="color:#a6e22e">key</span>, <span style="color:#a6e22e">elem</span> <span style="color:#a6e22e">Type</span>) <span style="color:#a6e22e">Type</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// PointerTo 给定类型的指针的类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">PointerTo</span>(<span style="color:#a6e22e">t</span> <span style="color:#a6e22e">Type</span>) <span style="color:#a6e22e">Type</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// PtrTo 给定类型的指针的类型，等同PointerTo
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">PtrTo</span>(<span style="color:#a6e22e">t</span> <span style="color:#a6e22e">Type</span>) <span style="color:#a6e22e">Type</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// SliceOf 给定类型元素的slice的类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">SliceOf</span>(<span style="color:#a6e22e">t</span> <span style="color:#a6e22e">Type</span>) <span style="color:#a6e22e">Type</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// StructOf 给定成员类型的结构体的类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">StructOf</span>(<span style="color:#a6e22e">fields</span> []<span style="color:#a6e22e">StructField</span>) <span style="color:#a6e22e">Type</span>
+</span></span></code></pre></div><h2 id="33-value">3.3 Value<a hidden class="anchor" aria-hidden="true" href="#33-value">#</a></h2>
+<p>类型定义：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// Value 变量
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Value</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// contains filtered or unexported fields
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><p>方法：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// Append 将多个变量x追加到slice s
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Append</span>(<span style="color:#a6e22e">s</span> <span style="color:#a6e22e">Value</span>, <span style="color:#a6e22e">x</span> <span style="color:#f92672">...</span><span style="color:#a6e22e">Value</span>) <span style="color:#a6e22e">Value</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// AppendSlice 将slice t追加到slice s
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">AppendSlice</span>(<span style="color:#a6e22e">s</span>, <span style="color:#a6e22e">t</span> <span style="color:#a6e22e">Value</span>) <span style="color:#a6e22e">Value</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Indirect 返回指针v指向的变量
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Indirect</span>(<span style="color:#a6e22e">v</span> <span style="color:#a6e22e">Value</span>) <span style="color:#a6e22e">Value</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// MakeChan 创建不同的类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">MakeChan</span>(<span style="color:#a6e22e">typ</span> <span style="color:#a6e22e">Type</span>, <span style="color:#a6e22e">buffer</span> <span style="color:#66d9ef">int</span>) <span style="color:#a6e22e">Value</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">MakeFunc</span>(<span style="color:#a6e22e">typ</span> <span style="color:#a6e22e">Type</span>, <span style="color:#a6e22e">fn</span> <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">args</span> []<span style="color:#a6e22e">Value</span>) (<span style="color:#a6e22e">results</span> []<span style="color:#a6e22e">Value</span>)) <span style="color:#a6e22e">Value</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">MakeMap</span>(<span style="color:#a6e22e">typ</span> <span style="color:#a6e22e">Type</span>) <span style="color:#a6e22e">Value</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">MakeMapWithSize</span>(<span style="color:#a6e22e">typ</span> <span style="color:#a6e22e">Type</span>, <span style="color:#a6e22e">n</span> <span style="color:#66d9ef">int</span>) <span style="color:#a6e22e">Value</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">MakeSlice</span>(<span style="color:#a6e22e">typ</span> <span style="color:#a6e22e">Type</span>, <span style="color:#a6e22e">len</span>, <span style="color:#a6e22e">cap</span> <span style="color:#66d9ef">int</span>) <span style="color:#a6e22e">Value</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// New 创建指定类型的空指针
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">New</span>(<span style="color:#a6e22e">typ</span> <span style="color:#a6e22e">Type</span>) <span style="color:#a6e22e">Value</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// NewAt 创建指针并指向p
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">NewAt</span>(<span style="color:#a6e22e">typ</span> <span style="color:#a6e22e">Type</span>, <span style="color:#a6e22e">p</span> <span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span>) <span style="color:#a6e22e">Value</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// ValueOf 创建变量并用i初始化
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">ValueOf</span>(<span style="color:#a6e22e">i</span> <span style="color:#a6e22e">any</span>) <span style="color:#a6e22e">Value</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Zero 创建指定类型变量并赋空值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Zero</span>(<span style="color:#a6e22e">typ</span> <span style="color:#a6e22e">Type</span>) <span style="color:#a6e22e">Value</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Call 本身是一个函数，调用自己，传入in作为参数列表
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">v</span> <span style="color:#a6e22e">Value</span>) <span style="color:#a6e22e">Call</span>(<span style="color:#a6e22e">in</span> []<span style="color:#a6e22e">Value</span>) []<span style="color:#a6e22e">Value</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 还包括类型Value的许多方法，如判断能否转化为各种类型、设置各种类型的值、转为各种类型的值等
+</span></span></span></code></pre></div><h2 id="34-method">3.4 Method<a hidden class="anchor" aria-hidden="true" href="#34-method">#</a></h2>
+<p>类型定义：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// Method 方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Method</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>    <span style="color:#75715e">// method name
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">PkgPath</span> <span style="color:#66d9ef">string</span> <span style="color:#75715e">// 对非导出的方法是包路径，对可导出的方法为空
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Type</span>  <span style="color:#a6e22e">Type</span>     <span style="color:#75715e">// method type
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Func</span>  <span style="color:#a6e22e">Value</span>    <span style="color:#75715e">// func with receiver as first argument
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Index</span> <span style="color:#66d9ef">int</span>      <span style="color:#75715e">// index for Type.Method
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><p>方法：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// IsExported 是否可导出（首字母大写）
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">m</span> <span style="color:#a6e22e">Method</span>) <span style="color:#a6e22e">IsExported</span>() <span style="color:#66d9ef">bool</span>
+</span></span></code></pre></div><h2 id="35-structfield">3.5 StructField<a hidden class="anchor" aria-hidden="true" href="#35-structfield">#</a></h2>
+<p>类型定义：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// StructField 结构体的某个成员
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">StructField</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>         <span style="color:#75715e">// field name
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">PkgPath</span> <span style="color:#66d9ef">string</span>      <span style="color:#75715e">// 对非导出的成员是包路径，对可导出的成员为空
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Type</span>      <span style="color:#a6e22e">Type</span>      <span style="color:#75715e">// field type
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Tag</span>       <span style="color:#a6e22e">StructTag</span> <span style="color:#75715e">// field tag string
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Offset</span>    <span style="color:#66d9ef">uintptr</span>   <span style="color:#75715e">// offset within struct, in bytes
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Index</span>     []<span style="color:#66d9ef">int</span>     <span style="color:#75715e">// index sequence for Type.FieldByIndex
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Anonymous</span> <span style="color:#66d9ef">bool</span>      <span style="color:#75715e">// is an embedded field
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><p>方法：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// VisibleFields 返回可见的成员列表
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">VisibleFields</span>(<span style="color:#a6e22e">t</span> <span style="color:#a6e22e">Type</span>) []<span style="color:#a6e22e">StructField</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// IsExported 是否可导出（首字母大写）
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">f</span> <span style="color:#a6e22e">StructField</span>) <span style="color:#a6e22e">IsExported</span>() <span style="color:#66d9ef">bool</span>
+</span></span></code></pre></div><h2 id="36-structtag">3.6 StructTag<a hidden class="anchor" aria-hidden="true" href="#36-structtag">#</a></h2>
+<p>类型定义：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// StructTag 结构体成员的标签
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">StructTag</span> <span style="color:#66d9ef">string</span>
+</span></span></code></pre></div><p>方法：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// Get 获取标签对应key的值，key不存在返回空字符串
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">tag</span> <span style="color:#a6e22e">StructTag</span>) <span style="color:#a6e22e">Get</span>(<span style="color:#a6e22e">key</span> <span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">string</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Lookup 获取标签对应key的值以及key是否存在
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">tag</span> <span style="color:#a6e22e">StructTag</span>) <span style="color:#a6e22e">Lookup</span>(<span style="color:#a6e22e">key</span> <span style="color:#66d9ef">string</span>) (<span style="color:#a6e22e">value</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">ok</span> <span style="color:#66d9ef">bool</span>)
+</span></span></code></pre></div><h2 id="37-mapiter">3.7 MapIter<a hidden class="anchor" aria-hidden="true" href="#37-mapiter">#</a></h2>
+<p>类型定义：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// MapIter map遍历的迭代器
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">MapIter</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// contains filtered or unexported fields
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><p>方法：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// Key 返回迭代器当前位置的key
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">iter</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">MapIter</span>) <span style="color:#a6e22e">Key</span>() <span style="color:#a6e22e">Value</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Value 返回迭代器当前位置的value
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">iter</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">MapIter</span>) <span style="color:#a6e22e">Value</span>() <span style="color:#a6e22e">Value</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Next 迭代器指向下一个元素，返回false表示遍历到尽头了
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">iter</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">MapIter</span>) <span style="color:#a6e22e">Next</span>() <span style="color:#66d9ef">bool</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Reset 将迭代器指向另一个map
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">iter</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">MapIter</span>) <span style="color:#a6e22e">Reset</span>(<span style="color:#a6e22e">v</span> <span style="color:#a6e22e">Value</span>)
+</span></span></code></pre></div><h2 id="38-其他类型">3.8 其他类型<a hidden class="anchor" aria-hidden="true" href="#38-其他类型">#</a></h2>
+<p>类型定义：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// ChanDir 通道类型的方向
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">ChanDir</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">RecvDir</span> <span style="color:#a6e22e">ChanDir</span>             = <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#66d9ef">iota</span> <span style="color:#75715e">// &lt;-chan
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">SendDir</span>                                 <span style="color:#75715e">// chan&lt;-
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">BothDir</span> = <span style="color:#a6e22e">RecvDir</span> | <span style="color:#a6e22e">SendDir</span>             <span style="color:#75715e">// chan
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// SelectCase select语句中的某个case
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">SelectCase</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Dir</span>  <span style="color:#a6e22e">SelectDir</span> <span style="color:#75715e">// direction of case
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Chan</span> <span style="color:#a6e22e">Value</span>     <span style="color:#75715e">// channel to use (for send or receive)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Send</span> <span style="color:#a6e22e">Value</span>     <span style="color:#75715e">// value to send (for send)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// SelectDir 一个SelectCase的通信方向
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">SelectDir</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> (
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">SelectSend</span>    <span style="color:#a6e22e">SelectDir</span> <span style="color:#75715e">// case Chan &lt;- Send
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">SelectRecv</span>              <span style="color:#75715e">// case &lt;-Chan:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">SelectDefault</span>           <span style="color:#75715e">// default
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// SliceHeader 运行时的slice
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">SliceHeader</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Data</span> <span style="color:#66d9ef">uintptr</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Len</span>  <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Cap</span>  <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// StringHeader 运行时的string
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">StringHeader</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Data</span> <span style="color:#66d9ef">uintptr</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Len</span>  <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="4-函数">4. 函数<a hidden class="anchor" aria-hidden="true" href="#4-函数">#</a></h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#75715e">// Copy 变量复制，两个参数必须是同样元素类型的slice或数组，返回复制的元素个数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Copy</span>(<span style="color:#a6e22e">dst</span>, <span style="color:#a6e22e">src</span> <span style="color:#a6e22e">Value</span>) <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// DeepEqual 比较参数是否深度相等，对于函数同样是nil才是深度相等
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">DeepEqual</span>(<span style="color:#a6e22e">x</span>, <span style="color:#a6e22e">y</span> <span style="color:#a6e22e">any</span>) <span style="color:#66d9ef">bool</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Swapper 返回一个函数，执行这个函数将调换现在的参数slice中的对应索引的元素
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Swapper</span>(<span style="color:#a6e22e">slice</span> <span style="color:#a6e22e">any</span>) <span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">j</span> <span style="color:#66d9ef">int</span>)
+</span></span></code></pre></div>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://huanglianjing.com/tags/go/">Go</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2023 <a href="http://huanglianjing.com/">huanglianjing</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>HTML on huanglianjing</title>
+    <link>http://huanglianjing.com/tags/html/</link>
+    <description>Recent content in HTML on huanglianjing</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 25 Jul 2023 02:12:48 +0800</lastBuildDate><atom:link href="http://huanglianjing.com/tags/html/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTML基础知识</title>
+      <link>http://huanglianjing.com/posts/html%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</link>
+      <pubDate>Tue, 25 Jul 2023 02:12:48 +0800</pubDate>
+      
+      <guid>http://huanglianjing.com/posts/html%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</guid>
+      <description>1. HTML简介 HTML是用来描述网页的一种语言，全称超文本标记语言(Hyper Text Markup Language)，它是一种标记语言，使用标记标签来描述网页，它的语法规则可以定义图片、表格、链接等。
+1.1 一个基础例子 一个基础的HTML例子：
+&amp;lt;!DOCTYPE html&amp;gt; &amp;lt;html&amp;gt; &amp;lt;head&amp;gt; &amp;lt;meta charset=&amp;#34;utf-8&amp;#34;&amp;gt; &amp;lt;title&amp;gt;page name&amp;lt;/title&amp;gt; &amp;lt;/head&amp;gt; &amp;lt;body&amp;gt; &amp;lt;h1&amp;gt;title 1&amp;lt;/h1&amp;gt; &amp;lt;h2&amp;gt;sub title&amp;lt;/h2&amp;gt; &amp;lt;p&amp;gt;paragraph text&amp;lt;/p&amp;gt; &amp;lt;h1&amp;gt;title 2&amp;lt;/h1&amp;gt; &amp;lt;p&amp;gt;paragraph text&amp;lt;/p&amp;gt; &amp;lt;/body&amp;gt; &amp;lt;/html&amp;gt; 整个文件由html标签包着，其中由分为首部和主体两部分，分别用head标签和body标签包裹。
+首部告诉浏览器关于网页的信息，如页面标题，首部包括&amp;lt;head&amp;gt;和&amp;lt;/head&amp;gt;之间的所有内容。其中的title标签定义了网页的标题，meta标签指定了字符编码。
+主体包含网页的所有内容和结构，也就是在浏览器直接看到的部分，主体包括&amp;lt;body&amp;gt;和&amp;lt;/body&amp;gt;之间的所有内容。其中的h1标签和h2标签分别是一级标题和二级标题，p标签则是段落。
+保存为HTML文件，在浏览器打开后，页面效果如下：
+此外，还可以在HTML的首部里增加一些样式，就是style标签。style标签有一个可选的属性type，一般指定为&amp;quot;text/css&amp;quot;。
+&amp;lt;!DOCTYPE html&amp;gt; &amp;lt;html&amp;gt; &amp;lt;head&amp;gt; &amp;lt;meta charset=&amp;#34;utf-8&amp;#34;&amp;gt; &amp;lt;title&amp;gt;page name&amp;lt;/title&amp;gt; &amp;lt;style type=&amp;#34;text/css&amp;#34;&amp;gt; body { background-color: #d2b48c; margin-left: 20%; margin-right: 20%; border: 2px dotted black; padding: 10px 10px 10px 10px; font-family: sans-serif; } &amp;lt;/style&amp;gt; &amp;lt;/head&amp;gt; &amp;lt;body&amp;gt; &amp;lt;h1&amp;gt;title 1&amp;lt;/h1&amp;gt; &amp;lt;h2&amp;gt;sub title&amp;lt;/h2&amp;gt; &amp;lt;p&amp;gt;paragraph text&amp;lt;/p&amp;gt; &amp;lt;h1&amp;gt;title 2&amp;lt;/h1&amp;gt; &amp;lt;p&amp;gt;paragraph text&amp;lt;/p&amp;gt; &amp;lt;/body&amp;gt; &amp;lt;/html&amp;gt; style标签中的body表示这段配置应用于主体中的body标签。</description>
+    </item>
+    
+  </channel>
+</rss>

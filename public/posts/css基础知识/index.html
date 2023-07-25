@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>CSS基础知识 | huanglianjing</title>
+<meta name="keywords" content="CSS">
+<meta name="description" content="1. CSS简介 CSS全称层叠样式表（Cascading Style Sheets），用于描述HTML文档样式。可以写在HTML文档的style标签中，也可以保存在.css文件中被引用。
+1.1 语法 CSS规则集由选择器和声明块组成，选择器指向需要设置样式的HTML元素，声明块包含若干条用分号分割的声明，每条声明由一个CSS属性和一个值组成。
+以上图片例子对应如下代码：
+p { color: red; font-size: 14px; } 注释用/*和*/包裹，可以跨多行。
+/*comment*/ 1.2 选择器 选择器用于查找要设置样式的HTML元素，分为以下五类：
+简单选择器：根据标签、id、类选取 组合器选择器：根据它们之间的特定关系选取 伪类选择器：根据特定状态选取 伪元素选择器：选取元素的一部分设置样式 属性选择器：根据属性或属性值选取 以下为基本的简单选择器：
+元素选择器
+根据标签名称选择元素。
+p {} id选择器
+选择特定id的元素。
+#id {} 类选择器
+选择特定类的元素。
+.class {} 也可以指定特定标签中的特定类。
+p.class {} 通用选择器
+选择所有元素。
+* {} 分组选择器
+选择多种条件组合应用同样的样式，减少重复代码。
+p, .c1, #id1 {} 后代选择器
+选择指定元素后代中的所有标签。
+div p {} 子选择器
+选择属于指定元素子元素的所有标签。
+div &gt; p {} :hover选择器
+鼠标指针移到元素上时的样式。
+a:hover { background-color:yellow; } 2. 颜色 颜色可以用多种方式来指定，以下为Tomato对应的不同颜色表示方法和值：">
+<meta name="author" content="">
+<link rel="canonical" href="http://huanglianjing.com/posts/css%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.3613efbd0b1772781e8f49935e973cae632a7f61471c05b17be155505ccf87b5.css" integrity="sha256-NhPvvQsXcngej0mTXpc8rmMqf2FHHAWxe&#43;FVUFzPh7U=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="http://huanglianjing.com/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://huanglianjing.com/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://huanglianjing.com/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://huanglianjing.com/apple-touch-icon.png">
+<link rel="mask-icon" href="http://huanglianjing.com/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="CSS基础知识" />
+<meta property="og:description" content="1. CSS简介 CSS全称层叠样式表（Cascading Style Sheets），用于描述HTML文档样式。可以写在HTML文档的style标签中，也可以保存在.css文件中被引用。
+1.1 语法 CSS规则集由选择器和声明块组成，选择器指向需要设置样式的HTML元素，声明块包含若干条用分号分割的声明，每条声明由一个CSS属性和一个值组成。
+以上图片例子对应如下代码：
+p { color: red; font-size: 14px; } 注释用/*和*/包裹，可以跨多行。
+/*comment*/ 1.2 选择器 选择器用于查找要设置样式的HTML元素，分为以下五类：
+简单选择器：根据标签、id、类选取 组合器选择器：根据它们之间的特定关系选取 伪类选择器：根据特定状态选取 伪元素选择器：选取元素的一部分设置样式 属性选择器：根据属性或属性值选取 以下为基本的简单选择器：
+元素选择器
+根据标签名称选择元素。
+p {} id选择器
+选择特定id的元素。
+#id {} 类选择器
+选择特定类的元素。
+.class {} 也可以指定特定标签中的特定类。
+p.class {} 通用选择器
+选择所有元素。
+* {} 分组选择器
+选择多种条件组合应用同样的样式，减少重复代码。
+p, .c1, #id1 {} 后代选择器
+选择指定元素后代中的所有标签。
+div p {} 子选择器
+选择属于指定元素子元素的所有标签。
+div &gt; p {} :hover选择器
+鼠标指针移到元素上时的样式。
+a:hover { background-color:yellow; } 2. 颜色 颜色可以用多种方式来指定，以下为Tomato对应的不同颜色表示方法和值：" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://huanglianjing.com/posts/css%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-07-25T02:12:26+08:00" />
+<meta property="article:modified_time" content="2023-07-25T02:12:26+08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="CSS基础知识"/>
+<meta name="twitter:description" content="1. CSS简介 CSS全称层叠样式表（Cascading Style Sheets），用于描述HTML文档样式。可以写在HTML文档的style标签中，也可以保存在.css文件中被引用。
+1.1 语法 CSS规则集由选择器和声明块组成，选择器指向需要设置样式的HTML元素，声明块包含若干条用分号分割的声明，每条声明由一个CSS属性和一个值组成。
+以上图片例子对应如下代码：
+p { color: red; font-size: 14px; } 注释用/*和*/包裹，可以跨多行。
+/*comment*/ 1.2 选择器 选择器用于查找要设置样式的HTML元素，分为以下五类：
+简单选择器：根据标签、id、类选取 组合器选择器：根据它们之间的特定关系选取 伪类选择器：根据特定状态选取 伪元素选择器：选取元素的一部分设置样式 属性选择器：根据属性或属性值选取 以下为基本的简单选择器：
+元素选择器
+根据标签名称选择元素。
+p {} id选择器
+选择特定id的元素。
+#id {} 类选择器
+选择特定类的元素。
+.class {} 也可以指定特定标签中的特定类。
+p.class {} 通用选择器
+选择所有元素。
+* {} 分组选择器
+选择多种条件组合应用同样的样式，减少重复代码。
+p, .c1, #id1 {} 后代选择器
+选择指定元素后代中的所有标签。
+div p {} 子选择器
+选择属于指定元素子元素的所有标签。
+div &gt; p {} :hover选择器
+鼠标指针移到元素上时的样式。
+a:hover { background-color:yellow; } 2. 颜色 颜色可以用多种方式来指定，以下为Tomato对应的不同颜色表示方法和值："/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://huanglianjing.com/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "CSS基础知识",
+      "item": "http://huanglianjing.com/posts/css%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "CSS基础知识",
+  "name": "CSS基础知识",
+  "description": "1. CSS简介 CSS全称层叠样式表（Cascading Style Sheets），用于描述HTML文档样式。可以写在HTML文档的style标签中，也可以保存在.css文件中被引用。\n1.1 语法 CSS规则集由选择器和声明块组成，选择器指向需要设置样式的HTML元素，声明块包含若干条用分号分割的声明，每条声明由一个CSS属性和一个值组成。\n以上图片例子对应如下代码：\np { color: red; font-size: 14px; } 注释用/*和*/包裹，可以跨多行。\n/*comment*/ 1.2 选择器 选择器用于查找要设置样式的HTML元素，分为以下五类：\n简单选择器：根据标签、id、类选取 组合器选择器：根据它们之间的特定关系选取 伪类选择器：根据特定状态选取 伪元素选择器：选取元素的一部分设置样式 属性选择器：根据属性或属性值选取 以下为基本的简单选择器：\n元素选择器\n根据标签名称选择元素。\np {} id选择器\n选择特定id的元素。\n#id {} 类选择器\n选择特定类的元素。\n.class {} 也可以指定特定标签中的特定类。\np.class {} 通用选择器\n选择所有元素。\n* {} 分组选择器\n选择多种条件组合应用同样的样式，减少重复代码。\np, .c1, #id1 {} 后代选择器\n选择指定元素后代中的所有标签。\ndiv p {} 子选择器\n选择属于指定元素子元素的所有标签。\ndiv \u0026gt; p {} :hover选择器\n鼠标指针移到元素上时的样式。\na:hover { background-color:yellow; } 2. 颜色 颜色可以用多种方式来指定，以下为Tomato对应的不同颜色表示方法和值：",
+  "keywords": [
+    "CSS"
+  ],
+  "articleBody": "1. CSS简介 CSS全称层叠样式表（Cascading Style Sheets），用于描述HTML文档样式。可以写在HTML文档的style标签中，也可以保存在.css文件中被引用。\n1.1 语法 CSS规则集由选择器和声明块组成，选择器指向需要设置样式的HTML元素，声明块包含若干条用分号分割的声明，每条声明由一个CSS属性和一个值组成。\n以上图片例子对应如下代码：\np { color: red; font-size: 14px; } 注释用/*和*/包裹，可以跨多行。\n/*comment*/ 1.2 选择器 选择器用于查找要设置样式的HTML元素，分为以下五类：\n简单选择器：根据标签、id、类选取 组合器选择器：根据它们之间的特定关系选取 伪类选择器：根据特定状态选取 伪元素选择器：选取元素的一部分设置样式 属性选择器：根据属性或属性值选取 以下为基本的简单选择器：\n元素选择器\n根据标签名称选择元素。\np {} id选择器\n选择特定id的元素。\n#id {} 类选择器\n选择特定类的元素。\n.class {} 也可以指定特定标签中的特定类。\np.class {} 通用选择器\n选择所有元素。\n* {} 分组选择器\n选择多种条件组合应用同样的样式，减少重复代码。\np, .c1, #id1 {} 后代选择器\n选择指定元素后代中的所有标签。\ndiv p {} 子选择器\n选择属于指定元素子元素的所有标签。\ndiv \u003e p {} :hover选择器\n鼠标指针移到元素上时的样式。\na:hover { background-color:yellow; } 2. 颜色 颜色可以用多种方式来指定，以下为Tomato对应的不同颜色表示方法和值：\n表示形式 值 颜色名称 Tomato RGB值 rgb(255, 99, 71) HEX值 #ff6347 HSL值 hsl(9, 100%, 64%) RGBA值 rgba(255, 99, 71, 1.0) HSLA值 hsla(9, 100%, 64%, 1.0) 具体支持的颜色名称和对应颜色值可以参考 HTML 颜色名 。\n2.1 RGB颜色 rgb(red, green, blue)中的红、绿、蓝参数定义从0到255之间的颜色强度。\nrgb(0, 0, 0)为黑色，rgb(255, 255, 255)为白色，rgb(255, 0, 0)为红色。\n2.2 HEX颜色 #rrggbb中的红、绿、蓝参数分别是00到ff之间的十六进制值。\n#000000为黑色，#ffffff为白色，#ff0000为红色。\n2.3 HSL颜色 hsla(hue, saturation, lightness)的参数分别为色相、饱和度、明度。\n色相是色轮上0到360的度数，饱和度是一个百分比，从0%阴影到100%全色，亮度是一个百分比，从0%黑色到100%白色。\n3. 背景 背景属性用于定义元素的背景效果。\n3.1 背景色 background-color\n指定元素的背景色。\ndiv { background-color: lightblue; } opacity\n指定元素的透明度。取值范围为0.0 - 1.0，值越低越透明。\ndiv { background-color: green; opacity: 0.3; } 3.2 背景图像 background-image\n指定用作元素背景的图像。\n默认在水平和垂直方向上都重复。\ndiv { background-image: url(\"paper.gif\"); } background-repeat\n设置水平和垂直方向是否重复，值repeat-x表示只在水平方向重复，值repeat-y表示只在垂直方向重复，值no-repeat表示不重复。\ndiv { background-image: url(\"tree.png\"); background-repeat: no-repeat; } background-position\n指定背景图像的位置。\ndiv { background-image: url(\"tree.png\"); background-repeat: no-repeat; background-position: right top; } background-attachment\n指定背景图像是应该滚动还是固定的，值fixed表示固定，值scroll表示滚动。\ndiv { background-image: url(\"tree.png\"); background-repeat: no-repeat; background-position: right top; background-attachment: fixed; } background-size\n指定背景图像的尺寸。\ndiv { background: url(img_flwr.gif); background-size: 80px 60px; } background\nbackground属性可以指定多个边框属性，background-color、background-image、background-repeat、background-attachment、background-position。\ndiv { background: #ffffff url(\"tree.png\") no-repeat right top; } 4. 边框 border-style\n指定要显示的边框类型。\ndiv { border-style: dotted; } 值可以为：\ndotted 点线边框 dashed 虚线边框 solid 实线边框 double 双边框 groove 3D坡口边框 ridge 3D脊线边框 inset 3D inset边框 outset 3D outset边框 none 无边框 hidden 隐藏边框 可以设置一到四个值，用于上边框、右边框、下边框和左边框。\n如果设置1个值，则同时表示四个边框。如果设置2个值，则分别表示上下和左右边框，如果设置三个值，则分别表示上、左右和下边框。\ndiv { border-style: dotted dashed solid double; } border-top-style border-right-style border-bottom-style border-left-style\n分别设置四个边框。\ndiv { border-top-style: dotted; border-right-style: solid; border-bottom-style: dotted; border-left-style: solid; } border-width\n设置边框宽度。\n值的单位px表示像素，%表示百分比例，也可以是thin、medium或thick。\ndiv { border-style: solid; border-width: 5px; } 可以设置一到四个值，用于上边框、右边框、下边框和左边框。\nborder-color\n设置边框颜色。\ndiv { border-style: solid; border-color: red; } border-radius\n定义圆角边框。\ndiv { border: solid; border-radius: 5px; } border\nborder属性可以指定多个边框属性，包含border-width、border-style、border-color。\ndiv { border: 5px solid red; } 5. 边距和宽高 CSS框模型的各种属性如下图：\n黑色实线处为边框，分为外边距和内边距，中间是实际元素的高度和宽度。\nmargin-top margin-right margin-bottom margin-left\n设置每一侧的外边距。\n单位可以是px或%，值为auto表示自动设置居中。\ndiv { margin-top: 100px; margin-bottom: 100px; margin-right: 150px; margin-left: 80px; } margin\n可以设置一至四个值，表示的方向和边框类型一致。\ndiv { margin: 25px 50px 75px 100px; } padding-top padding-right padding-bottom padding-left\n设置每一侧的内边距。\n单位可以是px或%。\ndiv { padding-top: 50px; padding-right: 30px; padding-bottom: 50px; padding-left: 80px; } padding\n可以设置一至四个值，表示的方向和边框类型一致。\ndiv { padding: 25px 50px 75px 100px; } height\nwidth\n设置元素的高度和宽度。\n单位可以为px和%。\ndiv { height: 200px; width: 50%; } 设置高度宽度的最大最小值：\nmax-height 最大高度 max-width 最大宽度 min-height 最小高度 min-width 最小宽度 6. 轮廓 轮廓是在元素的边框外绘制的，以凸显元素，是可能与其他内容重叠的。\noutline-style\n轮廓样式，和border-style可以设置的值一样。\ndiv { border-style: dotted; outline-style: dotted; } outline-width\n指定轮廓的宽度。\noutline-color\n指定轮廓的颜色。\noutline\noutline属性可以指定多个轮廓属性，包含outline-width、outline-style、outline-color。\ndiv { outline: 5px solid yellow; } 7. 文本 color\n设置文本的颜色。\ndiv { color: blue; } text-align\n设置文本水平对齐方式，可以是以下值：\ncenter 居中对齐 left 左对齐 right 右对齐 justify 拉伸每一行使得具有相等宽度，且左右边距是直的 div { text-align: center; } vertical-align\n设置元素垂直对齐方式，可以是以下值：\ntop middle bottom text-decoration\n设置或删除文本装饰。\n值为none表示无装饰，常用于删除链接的下划线，underline为下划线，overline为上划线，line-through为删除线。\ntext-transform\n指定文本中的大写和小写字母。\ntext-indent\n指定文本第一行的缩进。\nletter-spacing\n指定文本中字符之间的间距。\nline-height\n指定行之间的间距。\nword-spacing\n指定文本中单词之间的间距。\ntext-shadow\n为文本添加阴影。\n8. 字体 有五个通用字体族：\nserif 衬线字体，字母每个边缘有一个小的笔触 sans-serif 无衬线字体，线条简洁 monospace 等宽字体 cursive 草书字体，模仿人类笔记 fantasy 幻想字体，装饰性 font-family\n设置文本字体。\n可以设置多个字体作为后备，以逗号分隔。如果字体名称不止一个单词，则必须用引号引起来。\ndiv { font-family: \"Times New Roman\", Times, serif; } font-style\n设置字体样式，可以是以下值：\nnormal 正常字体 italic 斜体 oblique 倾斜 font-weight\n指定字体的粗细。\nfont-size\n设置文本的大小。\nfont\nfont属性可以指定多个字体属性，包含font-style、font-variant、font-weight、font-size、font-family。\ndiv { font: italic small-caps bold 12px/30px Georgia, serif; } 参考 W3school - CSS 教程 ",
+  "wordCount" : "508",
+  "inLanguage": "en",
+  "datePublished": "2023-07-25T02:12:26+08:00",
+  "dateModified": "2023-07-25T02:12:26+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://huanglianjing.com/posts/css%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "huanglianjing",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://huanglianjing.com/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://huanglianjing.com/" accesskey="h" title="huanglianjing (Alt + H)">huanglianjing</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://huanglianjing.com/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://huanglianjing.com/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      CSS基础知识
+    </h1>
+    <div class="post-meta"><span title='2023-07-25 02:12:26 +0800 CST'>July 25, 2023</span>
+
+</div>
+  </header> 
+  <div class="post-content"><h1 id="1-css简介">1. CSS简介<a hidden class="anchor" aria-hidden="true" href="#1-css简介">#</a></h1>
+<p>CSS全称层叠样式表（Cascading Style Sheets），用于描述HTML文档样式。可以写在HTML文档的style标签中，也可以保存在.css文件中被引用。</p>
+<h2 id="11-语法">1.1 语法<a hidden class="anchor" aria-hidden="true" href="#11-语法">#</a></h2>
+<p>CSS规则集由选择器和声明块组成，选择器指向需要设置样式的HTML元素，声明块包含若干条用分号分割的声明，每条声明由一个CSS属性和一个值组成。</p>
+<p><img loading="lazy" src="https://blog-1304941664.cos.ap-guangzhou.myqcloud.com/article_material/web/css_format.gif" alt="css_format"  />
+</p>
+<p>以上图片例子对应如下代码：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">p</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">color</span>: <span style="color:#66d9ef">red</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">font-size</span>: <span style="color:#ae81ff">14</span><span style="color:#66d9ef">px</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>注释用<code>/*</code>和<code>*/</code>包裹，可以跨多行。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#75715e">/*comment*/</span>
+</span></span></code></pre></div><h2 id="12-选择器">1.2 选择器<a hidden class="anchor" aria-hidden="true" href="#12-选择器">#</a></h2>
+<p>选择器用于查找要设置样式的HTML元素，分为以下五类：</p>
+<ul>
+<li>简单选择器：根据标签、id、类选取</li>
+<li>组合器选择器：根据它们之间的特定关系选取</li>
+<li>伪类选择器：根据特定状态选取</li>
+<li>伪元素选择器：选取元素的一部分设置样式</li>
+<li>属性选择器：根据属性或属性值选取</li>
+</ul>
+<p>以下为基本的简单选择器：</p>
+<p><strong>元素选择器</strong></p>
+<p>根据标签名称选择元素。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">p</span> {}
+</span></span></code></pre></div><p><strong>id选择器</strong></p>
+<p>选择特定id的元素。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span>#id {}
+</span></span></code></pre></div><p><strong>类选择器</strong></p>
+<p>选择特定类的元素。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span>.<span style="color:#a6e22e">class</span> {}
+</span></span></code></pre></div><p>也可以指定特定标签中的特定类。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">p</span>.<span style="color:#a6e22e">class</span> {}
+</span></span></code></pre></div><p><strong>通用选择器</strong></p>
+<p>选择所有元素。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">*</span> {}
+</span></span></code></pre></div><p><strong>分组选择器</strong></p>
+<p>选择多种条件组合应用同样的样式，减少重复代码。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">p</span><span style="color:#f92672">,</span> .<span style="color:#a6e22e">c1</span><span style="color:#f92672">,</span> #id1 {}
+</span></span></code></pre></div><p><strong>后代选择器</strong></p>
+<p>选择指定元素后代中的所有标签。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">div</span> <span style="color:#f92672">p</span> {}
+</span></span></code></pre></div><p><strong>子选择器</strong></p>
+<p>选择属于指定元素子元素的所有标签。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">div</span> <span style="color:#f92672">&gt;</span> <span style="color:#f92672">p</span> {}
+</span></span></code></pre></div><p>:hover选择器</p>
+<p>鼠标指针移到元素上时的样式。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">a</span>:<span style="color:#a6e22e">hover</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">background-color</span>:<span style="color:#66d9ef">yellow</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="2-颜色">2. 颜色<a hidden class="anchor" aria-hidden="true" href="#2-颜色">#</a></h1>
+<p>颜色可以用多种方式来指定，以下为Tomato对应的不同颜色表示方法和值：</p>
+<table>
+<thead>
+<tr>
+<th>表示形式</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>颜色名称</td>
+<td>Tomato</td>
+</tr>
+<tr>
+<td>RGB值</td>
+<td>rgb(255, 99, 71)</td>
+</tr>
+<tr>
+<td>HEX值</td>
+<td>#ff6347</td>
+</tr>
+<tr>
+<td>HSL值</td>
+<td>hsl(9, 100%, 64%)</td>
+</tr>
+<tr>
+<td>RGBA值</td>
+<td>rgba(255, 99, 71, 1.0)</td>
+</tr>
+<tr>
+<td>HSLA值</td>
+<td>hsla(9, 100%, 64%, 1.0)</td>
+</tr>
+</tbody>
+</table>
+<p>具体支持的颜色名称和对应颜色值可以参考 <a href="https://www.w3school.com.cn/html/html_colornames.asp">HTML 颜色名</a> 。</p>
+<h2 id="21-rgb颜色">2.1 RGB颜色<a hidden class="anchor" aria-hidden="true" href="#21-rgb颜色">#</a></h2>
+<p>rgb(red, green, blue)中的红、绿、蓝参数定义从0到255之间的颜色强度。</p>
+<p>rgb(0, 0, 0)为黑色，rgb(255, 255, 255)为白色，rgb(255, 0, 0)为红色。</p>
+<h2 id="22-hex颜色">2.2 HEX颜色<a hidden class="anchor" aria-hidden="true" href="#22-hex颜色">#</a></h2>
+<p>#rrggbb中的红、绿、蓝参数分别是00到ff之间的十六进制值。</p>
+<p>#000000为黑色，#ffffff为白色，#ff0000为红色。</p>
+<h2 id="23-hsl颜色">2.3 HSL颜色<a hidden class="anchor" aria-hidden="true" href="#23-hsl颜色">#</a></h2>
+<p>hsla(hue, saturation, lightness)的参数分别为色相、饱和度、明度。</p>
+<p>色相是色轮上0到360的度数，饱和度是一个百分比，从0%阴影到100%全色，亮度是一个百分比，从0%黑色到100%白色。</p>
+<h1 id="3-背景">3. 背景<a hidden class="anchor" aria-hidden="true" href="#3-背景">#</a></h1>
+<p>背景属性用于定义元素的背景效果。</p>
+<h2 id="31-背景色">3.1 背景色<a hidden class="anchor" aria-hidden="true" href="#31-背景色">#</a></h2>
+<p><strong>background-color</strong></p>
+<p>指定元素的背景色。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">div</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">background-color</span>: <span style="color:#66d9ef">lightblue</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>opacity</strong></p>
+<p>指定元素的透明度。取值范围为0.0 - 1.0，值越低越透明。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">div</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">background-color</span>: <span style="color:#66d9ef">green</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">opacity</span>: <span style="color:#ae81ff">0.3</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="32-背景图像">3.2 背景图像<a hidden class="anchor" aria-hidden="true" href="#32-背景图像">#</a></h2>
+<p><strong>background-image</strong></p>
+<p>指定用作元素背景的图像。</p>
+<p>默认在水平和垂直方向上都重复。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">div</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">background-image</span>: url(<span style="color:#e6db74">&#34;paper.gif&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>background-repeat</strong></p>
+<p>设置水平和垂直方向是否重复，值<code>repeat-x</code>表示只在水平方向重复，值<code>repeat-y</code>表示只在垂直方向重复，值<code>no-repeat</code>表示不重复。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">div</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">background-image</span>: url(<span style="color:#e6db74">&#34;tree.png&#34;</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">background-repeat</span>: <span style="color:#66d9ef">no-repeat</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>background-position</strong></p>
+<p>指定背景图像的位置。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">div</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">background-image</span>: url(<span style="color:#e6db74">&#34;tree.png&#34;</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">background-repeat</span>: <span style="color:#66d9ef">no-repeat</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">background-position</span>: <span style="color:#66d9ef">right</span> <span style="color:#66d9ef">top</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>background-attachment</strong></p>
+<p>指定背景图像是应该滚动还是固定的，值<code>fixed</code>表示固定，值<code>scroll</code>表示滚动。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">div</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">background-image</span>: url(<span style="color:#e6db74">&#34;tree.png&#34;</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">background-repeat</span>: <span style="color:#66d9ef">no-repeat</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">background-position</span>: <span style="color:#66d9ef">right</span> <span style="color:#66d9ef">top</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">background-attachment</span>: <span style="color:#66d9ef">fixed</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>background-size</strong></p>
+<p>指定背景图像的尺寸。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">div</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">background</span>: url(<span style="color:#e6db74">img_flwr.gif</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">background-size</span>: <span style="color:#ae81ff">80</span><span style="color:#66d9ef">px</span> <span style="color:#ae81ff">60</span><span style="color:#66d9ef">px</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>background</strong></p>
+<p>background属性可以指定多个边框属性，<code>background-color</code>、<code>background-image</code>、<code>background-repeat</code>、<code>background-attachment</code>、<code>background-position</code>。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">div</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">background</span>: <span style="color:#ae81ff">#ffffff</span> url(<span style="color:#e6db74">&#34;tree.png&#34;</span>) <span style="color:#66d9ef">no-repeat</span> <span style="color:#66d9ef">right</span> <span style="color:#66d9ef">top</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="4-边框">4. 边框<a hidden class="anchor" aria-hidden="true" href="#4-边框">#</a></h1>
+<p><strong>border-style</strong></p>
+<p>指定要显示的边框类型。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">div</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">border-style</span>: <span style="color:#66d9ef">dotted</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>值可以为：</p>
+<ul>
+<li>dotted 点线边框</li>
+<li>dashed 虚线边框</li>
+<li>solid 实线边框</li>
+<li>double 双边框</li>
+<li>groove 3D坡口边框</li>
+<li>ridge 3D脊线边框</li>
+<li>inset 3D inset边框</li>
+<li>outset 3D outset边框</li>
+<li>none 无边框</li>
+<li>hidden 隐藏边框</li>
+</ul>
+<p>可以设置一到四个值，用于上边框、右边框、下边框和左边框。</p>
+<p>如果设置1个值，则同时表示四个边框。如果设置2个值，则分别表示上下和左右边框，如果设置三个值，则分别表示上、左右和下边框。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">div</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">border-style</span>: <span style="color:#66d9ef">dotted</span> <span style="color:#66d9ef">dashed</span> <span style="color:#66d9ef">solid</span> <span style="color:#66d9ef">double</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>border-top-style</strong>
+<strong>border-right-style</strong>
+<strong>border-bottom-style</strong>
+<strong>border-left-style</strong></p>
+<p>分别设置四个边框。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">div</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">border-top-style</span>: <span style="color:#66d9ef">dotted</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">border-right-style</span>: <span style="color:#66d9ef">solid</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">border-bottom-style</span>: <span style="color:#66d9ef">dotted</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">border-left-style</span>: <span style="color:#66d9ef">solid</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>border-width</strong></p>
+<p>设置边框宽度。</p>
+<p>值的单位px表示像素，%表示百分比例，也可以是thin、medium或thick。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">div</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">border-style</span>: <span style="color:#66d9ef">solid</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">border-width</span>: <span style="color:#ae81ff">5</span><span style="color:#66d9ef">px</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>可以设置一到四个值，用于上边框、右边框、下边框和左边框。</p>
+<p><strong>border-color</strong></p>
+<p>设置边框颜色。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">div</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">border-style</span>: <span style="color:#66d9ef">solid</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">border-color</span>: <span style="color:#66d9ef">red</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>border-radius</strong></p>
+<p>定义圆角边框。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">div</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">border</span>: <span style="color:#66d9ef">solid</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">border-radius</span>: <span style="color:#ae81ff">5</span><span style="color:#66d9ef">px</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>border</strong></p>
+<p>border属性可以指定多个边框属性，包含<code>border-width</code>、<code>border-style</code>、<code>border-color</code>。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">div</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">border</span>: <span style="color:#ae81ff">5</span><span style="color:#66d9ef">px</span> <span style="color:#66d9ef">solid</span> <span style="color:#66d9ef">red</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="5-边距和宽高">5. 边距和宽高<a hidden class="anchor" aria-hidden="true" href="#5-边距和宽高">#</a></h1>
+<p>CSS框模型的各种属性如下图：</p>
+<p>黑色实线处为边框，分为外边距和内边距，中间是实际元素的高度和宽度。</p>
+<p><img loading="lazy" src="https://blog-1304941664.cos.ap-guangzhou.myqcloud.com/article_material/web/css_border_model.gif" alt="css_border_model"  />
+</p>
+<p><strong>margin-top</strong>
+<strong>margin-right</strong>
+<strong>margin-bottom</strong>
+<strong>margin-left</strong></p>
+<p>设置每一侧的外边距。</p>
+<p>单位可以是px或%，值为auto表示自动设置居中。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">div</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">margin-top</span>: <span style="color:#ae81ff">100</span><span style="color:#66d9ef">px</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">margin-bottom</span>: <span style="color:#ae81ff">100</span><span style="color:#66d9ef">px</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">margin-right</span>: <span style="color:#ae81ff">150</span><span style="color:#66d9ef">px</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">margin-left</span>: <span style="color:#ae81ff">80</span><span style="color:#66d9ef">px</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>margin</strong></p>
+<p>可以设置一至四个值，表示的方向和边框类型一致。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">div</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">margin</span>: <span style="color:#ae81ff">25</span><span style="color:#66d9ef">px</span> <span style="color:#ae81ff">50</span><span style="color:#66d9ef">px</span> <span style="color:#ae81ff">75</span><span style="color:#66d9ef">px</span> <span style="color:#ae81ff">100</span><span style="color:#66d9ef">px</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>padding-top</strong>
+<strong>padding-right</strong>
+<strong>padding-bottom</strong>
+<strong>padding-left</strong></p>
+<p>设置每一侧的内边距。</p>
+<p>单位可以是px或%。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">div</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">padding-top</span>: <span style="color:#ae81ff">50</span><span style="color:#66d9ef">px</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">padding-right</span>: <span style="color:#ae81ff">30</span><span style="color:#66d9ef">px</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">padding-bottom</span>: <span style="color:#ae81ff">50</span><span style="color:#66d9ef">px</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">padding-left</span>: <span style="color:#ae81ff">80</span><span style="color:#66d9ef">px</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>padding</strong></p>
+<p>可以设置一至四个值，表示的方向和边框类型一致。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">div</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">padding</span>: <span style="color:#ae81ff">25</span><span style="color:#66d9ef">px</span> <span style="color:#ae81ff">50</span><span style="color:#66d9ef">px</span> <span style="color:#ae81ff">75</span><span style="color:#66d9ef">px</span> <span style="color:#ae81ff">100</span><span style="color:#66d9ef">px</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>height</strong></p>
+<p><strong>width</strong></p>
+<p>设置元素的高度和宽度。</p>
+<p>单位可以为px和%。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">div</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">height</span>: <span style="color:#ae81ff">200</span><span style="color:#66d9ef">px</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">width</span>: <span style="color:#ae81ff">50</span><span style="color:#66d9ef">%</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>设置高度宽度的最大最小值：</p>
+<ul>
+<li>max-height 最大高度</li>
+<li>max-width 最大宽度</li>
+<li>min-height 最小高度</li>
+<li>min-width 最小宽度</li>
+</ul>
+<h1 id="6-轮廓">6. 轮廓<a hidden class="anchor" aria-hidden="true" href="#6-轮廓">#</a></h1>
+<p>轮廓是在元素的边框外绘制的，以凸显元素，是可能与其他内容重叠的。</p>
+<p><strong>outline-style</strong></p>
+<p>轮廓样式，和border-style可以设置的值一样。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">div</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">border-style</span>: <span style="color:#66d9ef">dotted</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">outline-style</span>: <span style="color:#66d9ef">dotted</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>outline-width</strong></p>
+<p>指定轮廓的宽度。</p>
+<p><strong>outline-color</strong></p>
+<p>指定轮廓的颜色。</p>
+<p><strong>outline</strong></p>
+<p>outline属性可以指定多个轮廓属性，包含<code>outline-width</code>、<code>outline-style</code>、<code>outline-color</code>。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">div</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">outline</span>: <span style="color:#ae81ff">5</span><span style="color:#66d9ef">px</span> <span style="color:#66d9ef">solid</span> <span style="color:#66d9ef">yellow</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="7-文本">7. 文本<a hidden class="anchor" aria-hidden="true" href="#7-文本">#</a></h1>
+<p><strong>color</strong></p>
+<p>设置文本的颜色。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">div</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">color</span>: <span style="color:#66d9ef">blue</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>text-align</strong></p>
+<p>设置文本水平对齐方式，可以是以下值：</p>
+<ul>
+<li>center 居中对齐</li>
+<li>left 左对齐</li>
+<li>right 右对齐</li>
+<li>justify 拉伸每一行使得具有相等宽度，且左右边距是直的</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">div</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">text-align</span>: <span style="color:#66d9ef">center</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>vertical-align</strong></p>
+<p>设置元素垂直对齐方式，可以是以下值：</p>
+<ul>
+<li>top</li>
+<li>middle</li>
+<li>bottom</li>
+</ul>
+<p><strong>text-decoration</strong></p>
+<p>设置或删除文本装饰。</p>
+<p>值为none表示无装饰，常用于删除链接的下划线，underline为下划线，overline为上划线，line-through为删除线。</p>
+<p><strong>text-transform</strong></p>
+<p>指定文本中的大写和小写字母。</p>
+<p><strong>text-indent</strong></p>
+<p>指定文本第一行的缩进。</p>
+<p><strong>letter-spacing</strong></p>
+<p>指定文本中字符之间的间距。</p>
+<p><strong>line-height</strong></p>
+<p>指定行之间的间距。</p>
+<p><strong>word-spacing</strong></p>
+<p>指定文本中单词之间的间距。</p>
+<p><strong>text-shadow</strong></p>
+<p>为文本添加阴影。</p>
+<h1 id="8-字体">8. 字体<a hidden class="anchor" aria-hidden="true" href="#8-字体">#</a></h1>
+<p>有五个通用字体族：</p>
+<ul>
+<li>serif 衬线字体，字母每个边缘有一个小的笔触</li>
+<li>sans-serif 无衬线字体，线条简洁</li>
+<li>monospace 等宽字体</li>
+<li>cursive 草书字体，模仿人类笔记</li>
+<li>fantasy 幻想字体，装饰性</li>
+</ul>
+<p><strong>font-family</strong></p>
+<p>设置文本字体。</p>
+<p>可以设置多个字体作为后备，以逗号分隔。如果字体名称不止一个单词，则必须用引号引起来。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">div</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">font-family</span>: <span style="color:#e6db74">&#34;Times New Roman&#34;</span>, Times, <span style="color:#66d9ef">serif</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>font-style</strong></p>
+<p>设置字体样式，可以是以下值：</p>
+<ul>
+<li>normal 正常字体</li>
+<li>italic 斜体</li>
+<li>oblique 倾斜</li>
+</ul>
+<p><strong>font-weight</strong></p>
+<p>指定字体的粗细。</p>
+<p><strong>font-size</strong></p>
+<p>设置文本的大小。</p>
+<p><strong>font</strong></p>
+<p>font属性可以指定多个字体属性，包含<code>font-style</code>、<code>font-variant</code>、<code>font-weight</code>、<code>font-size</code>、<code>font-family</code>。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">div</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">font</span>: <span style="color:#66d9ef">italic</span> <span style="color:#66d9ef">small-caps</span> <span style="color:#66d9ef">bold</span> <span style="color:#ae81ff">12</span><span style="color:#66d9ef">px</span><span style="color:#f92672">/</span><span style="color:#ae81ff">30</span><span style="color:#66d9ef">px</span> Georgia, <span style="color:#66d9ef">serif</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="参考">参考<a hidden class="anchor" aria-hidden="true" href="#参考">#</a></h1>
+<ul>
+<li><a href="https://www.w3school.com.cn/css/index.asp">W3school - CSS 教程</a></li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://huanglianjing.com/tags/css/">CSS</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2023 <a href="http://huanglianjing.com/">huanglianjing</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

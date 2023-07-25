@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>macOS on huanglianjing</title>
+    <link>http://huanglianjing.com/tags/macos/</link>
+    <description>Recent content in macOS on huanglianjing</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 25 Jul 2023 02:11:23 +0800</lastBuildDate><atom:link href="http://huanglianjing.com/tags/macos/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>macOS快捷键与常用软件</title>
+      <link>http://huanglianjing.com/posts/macos%E5%BF%AB%E6%8D%B7%E9%94%AE%E4%B8%8E%E5%B8%B8%E7%94%A8%E8%BD%AF%E4%BB%B6/</link>
+      <pubDate>Tue, 25 Jul 2023 02:11:23 +0800</pubDate>
+      
+      <guid>http://huanglianjing.com/posts/macos%E5%BF%AB%E6%8D%B7%E9%94%AE%E4%B8%8E%E5%B8%B8%E7%94%A8%E8%BD%AF%E4%BB%B6/</guid>
+      <description>1. macOS快捷键 1.1 按键符号 ⌘ (command) ⌥ (option) ⇧ (shift) ⌃ (control) ↩ (enter) ⌫ (delete) tab space ← → ↑ ↓ 1.2 快捷键 1.2.1 程序 ⌘ + tab 切换程序
+⌘ + ` 切换同一个程序不同窗口
+⌘ + Q 关闭程序
+⌘ + W 关闭窗口
+⌘ + N 打开新窗口
+⌘ + T 打开新tab
+⌘ + M 最小化
+⌘ + H 隐藏窗口
+⌘ + , 设置
+⌘ + ⌫ 删除文件
+⌘ + space 聚焦搜索</description>
+    </item>
+    
+  </channel>
+</rss>
