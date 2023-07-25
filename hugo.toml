@@ -1,4 +1,10 @@
-baseURL = 'http://example.org/'
-languageCode = 'en-us'
-title = 'My New Hugo Site'
-theme = 'papermod'
+baseURL = "http://huanglianjing.com/"
+languageCode = "en-us"
+title = "huanglianjing"
+theme = "papermod"
+
+[Menus]
+  main = [
+      {Name = "Categories", Weight = 1, URL = "/categories/"},
+      {Name = "Tags", Weight = 2, URL = "/tags/"}
+  ]
