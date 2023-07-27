@@ -1,6 +1,6 @@
 baseURL: "http://huanglianjing.com/"
 languageCode: "en-us"
-title: "huanglianjing"
+title: "huanglianjing's blog"
 theme: "papermod"
 
 enableInlineShortcodes: true
@@ -24,38 +24,38 @@ languages:
       weight: 1
       profileMode:
         enabled: true
-        title: "huanglianjing's blog"
+        title: "我的开发博客"
         subtitle:
-        imageUrl: "img/DO_COOL_THINGS_THAT_MATTER_BLUE.png"
-        imageTitle:
-        imageWidth: 640
-        imageHeight: 360
+        imageUrl: "img/MOONDO_1000_1000.JPG"
+        imageTitle: 
+        imageWidth: 200
+        imageHeight: 200
     menu:
       main:
-        - identifier: search
-          name: 🔍 搜索
-          url: search
-          weight: 1
         - identifier: home
-          name: 🏠 主页
+          name: 主页
           url: /
-          weight: 2
+          weight: 1
         - identifier: posts
-          name: 📚 文章
+          name: 文章
           url: posts
-          weight: 3
+          weight: 2
         - identifier: categories
-          name: 🧩 分类
+          name: 分类
           url: categories
-          weight: 13
+          weight: 3
         - identifier: tags
-          name: 🧩 标签
+          name: 标签
           url: tags
-          weight: 15
+          weight: 4
+        - identifier: search
+          name: 搜索
+          url: search
+          weight: 5
         - identifier: about
-          name: 🙋🏻‍♂️ 关于
-          url: about
-          weight: 50
+          name: 关于
+          url: posts/关于我
+          weight: 6
 
 outputs:
   home:
@@ -73,8 +73,8 @@ params:
   defaultTheme: auto  # defaultTheme: light or  dark
   disableThemeToggle: false
   DateFormat: "2006-01-02"
-  ShowShareButtons: true
-  ShowReadingTime: true
+  ShowShareButtons: false
+  ShowReadingTime: false
   # disableSpecialistPost: true
   displayFullLangName: true
   ShowPostNavLinks: true
@@ -82,8 +82,8 @@ params:
   ShowCodeCopyButtons: true
   hideFooter: false # 隐藏页脚
   ShowWordCounts: true
-  VisitCount: true
-  ShowLastMod: true #显示文章更新时间
+  VisitCount: false
+  ShowLastMod: false #显示文章更新时间
 
   ShowToc: true # 显示目录
   TocOpen: true # 自动展开目录
@@ -92,3 +92,15 @@ params:
     text: "huanglianjing's Blog"
     icon: "img/MOONDO_1000_1000.JPG"
     iconHeight: 35
+
+  assets:
+    favicon: "img/MOONDO_1000_1000.JPG"
+    favicon16x16: "img/MOONDO_1000_1000.JPG"
+    favicon32x32: "img/MOONDO_1000_1000.JPG"
+    apple_touch_icon: "img/MOONDO_1000_1000.JPG"
+    safari_pinned_tab: "img/MOONDO_1000_1000.JPG"
+    disableFingerprinting: true # 禁用指纹
+
+  FilingNo: "粤ICP备2021020498号" # 底部备案号
+  PublicSecurityIconLink: "img/beian.png" # 填自己的公安图标链接
+  PublicNetworkSecurity: "粤公网安备 44030402004549号" # 底部公网安备号

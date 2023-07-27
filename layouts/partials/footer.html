@@ -6,7 +6,6 @@
     <span>
         Copyright
         &copy;
-        {{ .Site.Params.StartYear }}-{{ now.Year }}
         <a href="{{ "" | absLangURL }}" style="color:#939393;">{{ .Site.Title }}</a>
         All Rights Reserved
     </span>
@@ -17,10 +16,6 @@
             <img src="{{ .Site.Params.PublicSecurityIconLink }}" style="float:left;margin: 0px 5px 0px 0px;"/>
             {{ .Site.Params.PublicNetworkSecurity }}
         </a>
-    </span>
-    <span id="busuanzi_container">
-        <span class="fa fa-user"></span> <span id="busuanzi_value_site_uv"></span>
-        <span class="fa fa-eye"></span> <span id="busuanzi_value_site_pv"></span>
     </span>
     {{- end }}
 </footer>
