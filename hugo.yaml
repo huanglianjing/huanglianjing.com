@@ -1,4 +1,4 @@
-baseURL: "http://huanglianjing.com/"
+baseURL: "https://huanglianjing.com/"
 languageCode: "en-us"
 title: "huanglianjing's blog"
 theme: "papermod"
@@ -14,8 +14,8 @@ summaryLength: 70
 permalinks: # 访问博客时网址的显示形式
   post: "/:title/"
 
-defaultContentLanguage: en # 最顶部首先展示的语言页面
-defaultContentLanguageInSubdir: true
+defaultContentLanguage: "en" # 最顶部首先展示的语言页面
+defaultContentLanguageInSubdir: false
 
 languages:
   en:
@@ -30,6 +30,11 @@ languages:
         imageTitle: 
         imageWidth: 200
         imageHeight: 200
+        buttons:
+          - name: Go
+            url: categories/go
+          - name: 消息队列
+            url: categories/消息队列
     menu:
       main:
         - identifier: home
@@ -102,5 +107,5 @@ params:
     disableFingerprinting: true # 禁用指纹
 
   FilingNo: "粤ICP备2021020498号" # 底部备案号
-  PublicSecurityIconLink: "img/beian.png" # 填自己的公安图标链接
+  PublicSecurityIconLink: "" # 填自己的公安图标链接
   PublicNetworkSecurity: "粤公网安备 44030402004549号" # 底部公网安备号

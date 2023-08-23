@@ -1,5 +1,5 @@
 ---
-title: "Go Modules：Go的包管 理"
+title: "Go Modules：包管理"
 date: 2023-07-25T01:52:02+08:00
 draft: false
 tags: ["Go"]
