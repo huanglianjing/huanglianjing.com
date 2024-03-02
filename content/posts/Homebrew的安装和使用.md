@@ -1,6 +1,6 @@
 ---
 title: "Homebrew的安装和使用"
-date: 2023-07-25T02:10:50+08:00
+date: 2023-07-21T02:37:29+08:00
 draft: false
 tags: ["Homebrew"]
 categories: ["macOS"]

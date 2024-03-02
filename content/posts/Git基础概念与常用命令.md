@@ -1,9 +1,9 @@
 ---
 title: "Git基础概念与常用命令"
-date: 2023-07-16T19:02:11+08:00
+date: 2021-11-14T01:43:50+08:00
 draft: false
 tags: ["Git"]
-categories: ["版本管理"]
+categories: ["版本控制"]
 ---
 
 # 1. 基础概念

@@ -1,6 +1,6 @@
 ---
 title: "Vim操作命令"
-date: 2023-07-25T02:10:20+08:00
+date: 2021-07-16T02:33:20+08:00
 draft: false
 tags: ["Vim"]
 categories: ["Linux"]

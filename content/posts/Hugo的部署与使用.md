@@ -1,6 +1,6 @@
 ---
 title: "Hugo的部署与使用"
-date: 2023-07-25T02:01:05+08:00
+date: 2023-07-17T01:01:22+08:00
 draft: false
 tags: ["Hugo"]
 categories: ["博客"]

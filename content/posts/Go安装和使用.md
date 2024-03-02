@@ -1,6 +1,6 @@
 ---
 title: "Go安装和使用"
-date: 2023-07-25T01:51:34+08:00
+date: 2021-06-30T02:02:30+08:00
 draft: false
 tags: ["Go"]
 categories: ["Go"]

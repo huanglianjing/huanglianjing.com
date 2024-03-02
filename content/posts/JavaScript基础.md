@@ -1,6 +1,6 @@
 ---
 title: "JavaScript基础"
-date: 2023-07-25T02:13:11+08:00
+date: 2021-10-07T03:10:11+08:00
 draft: false
 tags: ["JavaScript"]
 categories: ["web"]

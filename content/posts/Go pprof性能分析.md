@@ -1,6 +1,6 @@
 ---
-title: "Go Pprof性能分析"
-date: 2023-07-25T01:52:12+08:00
+title: "Go pprof性能分析"
+date: 2023-07-10T03:58:02+08:00
 draft: false
 tags: ["Go","pprof"]
 categories: ["Go"]

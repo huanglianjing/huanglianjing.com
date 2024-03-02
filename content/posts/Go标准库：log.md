@@ -1,6 +1,6 @@
 ---
 title: "Go标准库：log"
-date: 2023-07-25T01:51:33+08:00
+date: 2023-07-13T02:39:56+08:00
 draft: false
 tags: ["Go"]
 categories: ["Go"]
