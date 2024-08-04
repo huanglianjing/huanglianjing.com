@@ -1,5 +1,5 @@
 ---
-title: "Go Cache：Go本地缓存的使用与源码分析"
+title: "go-cache：Go本地缓存的使用与源码分析"
 date: 2023-11-26T16:29:11+08:00
 draft: false
 showToc: true # 显示目录

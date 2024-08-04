@@ -33,6 +33,8 @@ languages:
         buttons:
           - name: Go
             url: categories/go
+          - name: 数据库
+            url: categories/数据库
           - name: 消息队列
             url: categories/消息队列
     menu:
