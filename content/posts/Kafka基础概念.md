@@ -2,8 +2,10 @@
 title: "Kafka基础概念"
 date: 2021-09-28T09:56:21+08:00
 draft: false
-tags: ["Kafka"]
+showToc: true # 显示目录
+TocOpen: true # 自动展开目录
 categories: ["消息队列"]
+tags: ["Kafka"]
 ---
 
 # 1. 介绍

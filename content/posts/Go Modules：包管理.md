@@ -2,8 +2,10 @@
 title: "Go Modules：包管理"
 date: 2023-08-24T01:15:30+08:00
 draft: false
-tags: ["Go"]
+showToc: true # 显示目录
+TocOpen: true # 自动展开目录
 categories: ["Go"]
+tags: ["Go","mod"]
 ---
 
 # 1. Go Modules介绍

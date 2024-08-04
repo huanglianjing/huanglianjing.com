@@ -2,8 +2,10 @@
 title: "HTML基础知识"
 date: 2021-06-30T02:02:30+08:00
 draft: false
-tags: ["HTML"]
+showToc: true # 显示目录
+TocOpen: true # 自动展开目录
 categories: ["web"]
+tags: ["HTML"]
 ---
 
 # 1. HTML简介

@@ -5,7 +5,7 @@ draft: false
 showToc: true # 显示目录
 TocOpen: true # 自动展开目录
 categories: ["Go"]
-tags: ["Go","单元测试"]
+tags: ["Go","单元测试","基准测试"]
 ---
 
 # 1. go test

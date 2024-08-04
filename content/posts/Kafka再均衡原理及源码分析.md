@@ -2,8 +2,10 @@
 title: "Kafka再均衡原理及源码分析"
 date: 2021-10-13T02:39:00+08:00
 draft: false
-tags: ["Kafka"]
+showToc: true # 显示目录
+TocOpen: true # 自动展开目录
 categories: ["消息队列"]
+tags: ["Kafka","再均衡","rebalance"]
 ---
 
 # 1. 前言

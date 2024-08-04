@@ -2,8 +2,10 @@
 title: "CSS基础知识"
 date: 2021-06-30T21:06:43+08:00
 draft: false
-tags: ["CSS"]
+showToc: true # 显示目录
+TocOpen: true # 自动展开目录
 categories: ["web"]
+tags: ["CSS"]
 ---
 
 # 1. CSS简介

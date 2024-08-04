@@ -5,7 +5,7 @@ draft: false
 showToc: true # 显示目录
 TocOpen: true # 自动展开目录
 categories: ["Linux"]
-tags: ["Linux"]
+tags: ["Linux","命令"]
 ---
 
 # 1. 帮助文档

@@ -4,8 +4,8 @@ date: 2023-08-17T00:28:51+08:00
 draft: false
 showToc: true # 显示目录
 TocOpen: true # 自动展开目录
-tags: ["Go"]
 categories: ["Go"]
+tags: ["Go"]
 ---
 
 # 1. 程序启动

@@ -2,8 +2,10 @@
 title: "Markdown语法"
 date: 2021-07-11T23:51:50+08:00
 draft: false
-tags: ["Markdown"]
+showToc: true # 显示目录
+TocOpen: true # 自动展开目录
 categories: ["编码"]
+tags: ["Markdown"]
 ---
 
 # 1. Markdown介绍

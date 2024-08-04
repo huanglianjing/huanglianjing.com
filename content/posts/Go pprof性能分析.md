@@ -2,8 +2,10 @@
 title: "Go pprof性能分析"
 date: 2023-07-10T03:58:02+08:00
 draft: false
-tags: ["Go","pprof"]
+showToc: true # 显示目录
+TocOpen: true # 自动展开目录
 categories: ["Go"]
+tags: ["Go","pprof","性能分析"]
 ---
 
 # 1. 简介

@@ -5,7 +5,7 @@ draft: false
 showToc: true # 显示目录
 TocOpen: true # 自动展开目录
 categories: ["编码"]
-tags: ["JSON","XML","YAML","TOML"]
+tags: ["编码","JSON","XML","YAML","TOML"]
 ---
 
 # 1. JSON

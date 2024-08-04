@@ -2,8 +2,10 @@
 title: "Homebrew的安装和使用"
 date: 2023-07-21T02:37:29+08:00
 draft: false
-tags: ["Homebrew"]
+showToc: true # 显示目录
+TocOpen: true # 自动展开目录
 categories: ["macOS"]
+tags: ["Homebrew"]
 ---
 
 # 1. 简介

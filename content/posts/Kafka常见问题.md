@@ -2,8 +2,10 @@
 title: "Kafka常见问题"
 date: 2021-10-28T22:55:17+08:00
 draft: false
-tags: ["Kafka"]
+showToc: true # 显示目录
+TocOpen: true # 自动展开目录
 categories: ["消息队列"]
+tags: ["Kafka"]
 ---
 
 ## 为什么Kafka不支持读写分离

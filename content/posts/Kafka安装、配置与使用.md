@@ -2,8 +2,10 @@
 title: "Kafka安装、配置与使用"
 date: 2021-10-26T03:33:03+08:00
 draft: false
-tags: ["Kafka"]
+showToc: true # 显示目录
+TocOpen: true # 自动展开目录
 categories: ["消息队列"]
+tags: ["Kafka"]
 ---
 
 # 1. 安装

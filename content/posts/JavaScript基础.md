@@ -2,8 +2,10 @@
 title: "JavaScript基础"
 date: 2021-10-07T03:10:11+08:00
 draft: false
-tags: ["JavaScript"]
+showToc: true # 显示目录
+TocOpen: true # 自动展开目录
 categories: ["web"]
+tags: ["JavaScript"]
 ---
 
 # 1. JavaScript语法

@@ -2,8 +2,10 @@
 title: "Hugo的部署与使用"
 date: 2023-07-17T01:01:22+08:00
 draft: false
-tags: ["Hugo"]
+showToc: true # 显示目录
+TocOpen: true # 自动展开目录
 categories: ["博客"]
+tags: ["博客","Hugo"]
 ---
 
 # 1. 简介

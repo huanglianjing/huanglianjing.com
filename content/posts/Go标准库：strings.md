@@ -2,8 +2,10 @@
 title: "Go标准库：strings"
 date: 2023-07-06T01:30:33+08:00
 draft: false
-tags: ["Go"]
+showToc: true # 显示目录
+TocOpen: true # 自动展开目录
 categories: ["Go"]
+tags: ["Go","strings"]
 ---
 
 # 1. 介绍

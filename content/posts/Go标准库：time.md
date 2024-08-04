@@ -2,8 +2,10 @@
 title: "Go标准库：time"
 date: 2023-07-05T02:28:59+08:00
 draft: false
-tags: ["Go"]
+showToc: true # 显示目录
+TocOpen: true # 自动展开目录
 categories: ["Go"]
+tags: ["Go","time"]
 ---
 
 # 1. 介绍

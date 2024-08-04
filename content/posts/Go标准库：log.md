@@ -2,8 +2,10 @@
 title: "Go标准库：log"
 date: 2023-07-13T02:39:56+08:00
 draft: false
-tags: ["Go"]
+showToc: true # 显示目录
+TocOpen: true # 自动展开目录
 categories: ["Go"]
+tags: ["Go","log"]
 ---
 
 # 1. 介绍

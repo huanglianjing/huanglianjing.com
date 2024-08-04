@@ -5,7 +5,7 @@ draft: false
 showToc: true # 显示目录
 TocOpen: true # 自动展开目录
 categories: ["Go"]
-tags: ["Go","ulule/limiter"]
+tags: ["Go","ulule/limiter","限流"]
 ---
 
 # 1. 简介

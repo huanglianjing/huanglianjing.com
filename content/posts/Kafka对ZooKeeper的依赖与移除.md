@@ -2,8 +2,10 @@
 title: "Kafka对ZooKeeper的依赖与移除"
 date: 2021-10-03T23:47:51+08:00
 draft: false
-tags: ["Kafka","ZooKeeper"]
+showToc: true # 显示目录
+TocOpen: true # 自动展开目录
 categories: ["消息队列"]
+tags: ["Kafka","ZooKeeper"]
 ---
 
 # 1. 概述

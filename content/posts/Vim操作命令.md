@@ -2,8 +2,10 @@
 title: "Vim操作命令"
 date: 2021-07-16T02:33:20+08:00
 draft: false
-tags: ["Vim"]
+showToc: true # 显示目录
+TocOpen: true # 自动展开目录
 categories: ["Linux"]
+tags: ["Linux","Vim"]
 ---
 
 # 1. Vim介绍

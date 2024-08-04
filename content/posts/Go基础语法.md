@@ -2,8 +2,10 @@
 title: "Go基础语法"
 date: 2021-06-30T02:02:30+08:00
 draft: false
-tags: ["Go","语法"]
+showToc: true # 显示目录
+TocOpen: true # 自动展开目录
 categories: ["Go"]
+tags: ["Go"]
 ---
 
 # 1. 程序结构
