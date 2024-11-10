@@ -61,6 +61,25 @@ ssh <user>@<ip>:<path>
 ssh <use>r@<ip> <cmd>
 ```
 
+## sshpass
+
+执行执行命令时，明文指定密码。如登陆远程服务器，远程执行命令或脚本，文件跨机器复制。
+
+-p passwd 密码
+
+```bash
+sshpass -p <passwd> <cmd>
+
+# 登陆远程服务器
+sshpass -p '123456' ssh root@192.168.1.2
+
+# 远程执行命令或脚本
+sshpass -p '123456' ssh root@192.168.1.2 "touch a.txt"
+
+# 文件跨机器复制
+sshpass -p '123456' scp a.txt root@192.168.1.2:/data/
+```
+
 ## ssh-keygen
 
 创建ssh key
@@ -185,9 +204,11 @@ nohup <cmd> & >> a.log 2>&1
 
 ## xargs
 
-将标准输入分隔，依次作为后面命令的参数执行
+将标准输入分隔，依次作为后面命令的参数执行。通常接在管道后面，将其标准输出作为标准输入。
 
-通常接在管道后面，将其标准输出作为标准输入
+-t 打印命令和输出
+
+-p 在每次执行命令时提示用户确认
 
 ```bash
 # 打印文件的每一行
@@ -195,6 +216,9 @@ cat a.txt | xargs echo
 
 # 查看目录中所有文件的类型
 ls | xargs file
+
+# 找出所有文件中包含某个字符串的文件
+find . -name '*.cpp' | xargs grep 'stdlib.h'
 ```
 
 ## watch
@@ -254,6 +278,12 @@ LSB版本信息
 lsb_release
 ```
 
+查看操作系统信息。
+
+```bash
+cat /etc/os-release
+```
+
 ## hostname
 
 机器名
@@ -306,7 +336,7 @@ passwd <user>
 
 ## service
 
-系统服务
+系统服务管理
 
 ```bash
 # 查看所有服务状态
@@ -325,6 +355,40 @@ service <serv> stop
 service <serv> restart
 ```
 
+## systemctl
+
+系统服务管理
+
+管理的服务可以在 `/usr/lib/systemd/system`  中查看
+
+```bash
+# 查看服务状态
+systemctl status <serv>
+
+# 启动服务
+systemctl start <serv>
+
+# 停止服务
+systemctl stop <serv>
+
+# 重启服务
+systemctl restart <serv>
+
+# 设置服务开机启动
+systemctl enable <serv>
+
+# 取消服务开机启动
+systemctl disable <serv>
+
+# 列出当前加载的内容
+systemctl list-units # 单元
+systemctl list-sockets # socket单元
+systemctl list-unit-files # 安装的单元
+
+# 重新加载系统配置
+systemctl daemon-reload
+```
+
 ## ulimit
 
 查看各系统选项的限额
@@ -338,6 +402,21 @@ ulimit -<option> n
 
 # 不限制core文件大小，用于生成core文件进行分析
 ulimit -c unlimited
+```
+
+## timedatectl
+
+查看和设置时区
+
+```bash
+# 查看系统时区，如 Asia/Shanghai (CST, +0800)
+timedatectl
+
+# 列出所有时区
+timedatectl list-timezones
+
+# 设置时区，使用一个可用的时区名称
+sudo timedatectl set-timezone Asia/Shanghai
 ```
 
 # 4. 工具
@@ -366,6 +445,7 @@ format：
 * %M 分
 * %S 秒
 * %s 时间戳
+* %N 一秒内的纳秒数
 
 -s time 设置时间
 
@@ -387,6 +467,20 @@ date +'%Y-%m-%d %H:%M:%S'
 
 # 时间戳
 date +%s
+```
+
+## time
+
+计算命令执行的时间
+
+-o FILE 将结果输出文件
+
+-a 追加到文件
+
+-f FORMAT 设置结果显示格式
+
+```bash
+time <命令>
 ```
 
 ## cal
@@ -488,7 +582,7 @@ strace <exe>
 
 进程面板
 
--p pid 只显示该进程
+-p pid 只显示该进程，可以带多个
 
 -H 线程模式
 
@@ -507,6 +601,18 @@ strace <exe>
 ```bash
 top
 # Mc 按内存排序且显示完整命令
+```
+
+## uptime
+
+显示系统运行时间和平均负载。
+
+-p 简化展示更易读
+
+-s 系统最后一次启动时间
+
+```bash
+uptime
 ```
 
 ## ps
@@ -539,6 +645,20 @@ pstree
 pstree -p 1234
 ```
 
+## pgrep
+
+根据进程名称查找进程id
+
+-l 列出进程id和名称
+
+-a 列出进程id和执行命令
+
+-c 只输出匹配的进程数量
+
+```bash
+pgrep <process>
+```
+
 ## jobs
 
 当前终端在后台运行的进程
@@ -567,9 +687,17 @@ bg <jobid>
 
 ## free
 
-内存占用
+内存占用，默认单位是 KB
 
 -h 大小转为合适单位
+
+-b B单位
+
+-k KB单位
+
+-m MB单位
+
+-g GB单位
 
 ```bash
 free
@@ -577,10 +705,97 @@ free
 
 ## vmstat
 
-查看虚拟内存
+查看虚拟内存情况。
+
+-a 活跃和不活跃的内存
+
+-f 启动以来创建的进程数量
+
+-s 各种事件统计
+
+-d 磁盘统计
+
+-t 显示当前时间
 
 ```bash
 vmstat
+```
+
+## mpstat
+
+显示每个 CPU 的占用情况。
+
+-P \<n\> 指定监控的CPU，序号从 0 开始，ALL 表示监控所有 CPU
+
+```bash
+# 监控所有 CPU
+mpstat -P ALL
+
+# 设置采样间隔
+mpstat -P ALL 1
+
+# 设置采样间隔和采样次数
+mpstat -P ALL 1 10
+```
+
+## pidstat
+
+显示每个进程的 CPU 使用情况。
+
+-C \<name\> 只显示名字匹配的进程，可以用正则表达式
+
+-d 显示磁盘读写速度
+
+-l 显示程序的完整执行路径和参数
+
+-r 显示内存页需从磁盘加载数量和虚拟内存信息
+
+-s 显示堆栈信息
+
+-w 显示进程上下文切换速度
+
+```bash
+pidstat
+
+# 设置采样间隔
+pidstat 1
+
+# 设置采样间隔和采样次数
+pidstat 1 10
+```
+
+## sar
+
+监控系统的 CPU、内存、磁盘。
+
+-A 所有方面的情况
+
+-u CPU负载情况
+
+-d 硬盘使用情况
+
+-r 内存使用情况
+
+-b 缓冲区使用情况
+
+-v 内核表统计信息
+
+-q 运行列表的进程统计情况
+
+-B 内存分页情况
+
+-w 系统交换活动状态
+
+-n DEV/EDEV/SOCK/FULL 网络运行状态
+
+```bash
+sar
+
+# 设置采样间隔
+sar 1
+
+# 设置采样间隔和采样次数
+sar 1 10
 ```
 
 ## kill
@@ -611,13 +826,15 @@ killall <process>
 
 列出打开的文件
 
--p pid 指定进程
+-p \<pid\> 指定进程开启的文件
 
--i 符合条件的进程
+-c \<进程名\> 指定进程开启的文件
 
-+d dir 目录下当前一层被进程开启的文件
+-i \<条件\> 符合条件的进程
 
-+D dir 目录下所有层被进程开启的文件
++d \<dir\> 目录下当前一层被进程开启的文件
+
++D \<dir\> 目录下所有层被进程开启的文件
 
 -u uid/user 该用户打开的文件
 
@@ -633,6 +850,20 @@ lsof -i
 
 # 列出端口被哪些进程占用
 lsof -i:<port>
+```
+
+## fuser
+
+查看文件或 socket 被哪些进程使用
+
+-u 同时展示用户名
+
+-v 显示详细信息
+
+-k 关闭使用该文件的进程
+
+```bash
+fuser a.log
 ```
 
 # 7. 网络
@@ -655,6 +886,9 @@ lsof -i:<port>
 
 ```bash
 netstat -tunap
+
+# 查看监听中的端口
+netstat -tunap | grep LISTEN
 ```
 
 ## ifconfig
@@ -672,6 +906,29 @@ ifconfig
 ```bash
 ping <ip>
 ping <hostname>
+```
+
+## nmap
+
+扫描网络中的所有主机
+
+-sn 表示用 ping 扫描，每个活动主机的 IP 地址和 ping 延迟都会被列出来
+
+-sT tcp扫描
+
+-sU udp扫描
+
+-sS syn扫描
+
+-sA ack扫描
+
+--script=FILE 执行指定脚本
+
+```bash
+nmap 目标
+
+# 使用 ping 扫描
+nmap -sn 192.168.0.0/24
 ```
 
 ## traceroute
@@ -701,8 +958,32 @@ nc <ip> <port>
 
 -O 根据url中的文件名保存
 
+-H 添加HTTP请求的头
+
+-X POST 指定请求方法
+
+-d/--data 指定POST请求的数据体
+
 ```bash
 curl <url>
+
+# 发送 GET 请求
+curl -X GET https://example.com/api/endpoint
+
+# 发送 POST 请求，JSON数据
+curl -X POST \
+  -H "Content-Type: application/json" \
+  --data '{"key1":"value1", "key2":"value2"}' \
+  https://example.com/api/endpoint
+# 发送 POST 请求，表单数据
+curl -X POST \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  --data "param1=value1&param2=value2" \
+  https://example.com/api/endpoint
+curl -X POST \
+  -F "param1=value1" \
+  -F "file=@localfile.txt" \
+  https://example.com/upload
 ```
 
 ## wget
@@ -724,6 +1005,50 @@ wget <url>
 ```
 
 # 8. 磁盘
+
+## iotop
+
+查看磁盘IO使用情况。
+
+-o 只显示有IO操作的进程
+
+-d n 每n秒刷新一次
+
+-p pid 监控特定进程
+
+-u user 监控特定用户的进程
+
+内部指令：
+
+* r 改变排序顺序
+* o 只显示有IO操作的进程
+* a 累计使用量/间隔时间内速率
+
+```bash
+iotop
+```
+
+## iostat
+
+查看磁盘操作活动情况。
+
+-c 显示CPU使用情况
+
+-d 显示磁盘使用情况
+
+-k 单位为KB
+
+-m 单位为MB
+
+-N 磁盘阵列LVM信息
+
+-n 显示NFS使用情况
+
+-x 显示更多详细信息
+
+```bash
+iostat
+```
 
 ## df
 
@@ -833,9 +1158,9 @@ chmod u+x a.sh
 
 ## chown
 
-修改文件的所有者
+修改文件或文件夹的所有者
 
--R 修改文件夹
+-R 递归修改文件夹
 
 ```bash
 chown <user> <file>
@@ -888,9 +1213,25 @@ who
 whoami
 ```
 
+## id
+
+显示用户id和所属群组id
+
+```bash
+# 获取用户id和群组id
+id
+
+# 获取用户id
+id -u
+```
+
 ## su
 
-切换用户，需要root密码
+切换用户，需要root密码。
+
+su 后面添加 - 表示切换用户后，加载该用户的环境变量等设置。
+
+-c 不切换用户，而是直接以该用户执行指定命令
 
 ```bash
 # 切换为root
@@ -901,11 +1242,19 @@ su -
 
 # 切换用户
 su <user>
+
+# 切换用户，并将目录切换至该 home 目录
+su - <user>
+
+# 使用用户执行指定命令
+su - <user> -c <cmd>
 ```
 
 ## sudo
 
-使用root权限执行命令，需要当前用户密码
+使用root权限执行命令，需要当前用户密码。
+
+用户是否拥有该权限的配置在 /etc/sudoers 中。
 
 ```bash
 # 使用root权限
@@ -913,6 +1262,9 @@ sudo <cmd>
 
 # 切换用户为root
 sudo su
+
+# 使用某个用户执行命令
+sudo -u <user> <cmd>
 ```
 
 ## useradd
@@ -996,6 +1348,14 @@ ls <file>
 
 # 显示当前目录，按修改时间从旧到新排序
 ls -lrt
+```
+
+## tree
+
+以树形结构显示目录内容，默认是当前目录，也可以指定目录。
+
+```bash
+tree
 ```
 
 ## cd
@@ -1086,6 +1446,34 @@ rmdir <dir>
 cp <file1> <file2>
 ```
 
+## install
+
+复制文件和目录，并设置文件属性。
+
+-d, --directory 所有参数都作为目录处理，且创建指定目录的所有主目录
+
+-D 创建目标的目录并将文件复制
+
+-g \<group\>, --group=\<group\> 设置所属组
+
+-o \<user\>, --owner=\<user\> 设置所有者
+
+-m \<mode\>, --mode=\<mode\> 设置权限模式
+
+-p, --preserve-timestamps 保留文件的时间属性
+
+-v, --verbose 打印处理的每个文件/目录名称
+
+```bash
+# 复制文件
+install <src> <dst>
+install <src>... <dst>
+install -t <dst> <src>...
+
+# 设置文件夹
+install <option> -d <dir>...
+```
+
 ## mv
 
 移动文件，重命名。
@@ -1158,7 +1546,7 @@ stat <file>
 
 ## find
 
-搜索目录的所有文件
+搜索目录的所有文件。当目录中有大量文件时，ls 统计全部文件可能会很卡和出现大量打开错误，这时候可以使用 find 来替代。
 
 ! 取反
 
@@ -1168,9 +1556,15 @@ stat <file>
 
 -name file 文件名
 
+-iname file 文件名，不区分大小写
+
 -mtime n/+n/-n 改动时间等于/大于/小于n天
 
 -atime n 访问时间
+
+-size n/+n/-n 文件大小等于/大于/小于n，指定单位
+
+-inum \<inode\> 查询文件inode
 
 ```bash
 # 列出目录下所有文件
@@ -1181,6 +1575,12 @@ find <dir> -name *.log
 
 # 搜索1天内修改的文件
 find <dir> -mtime -1
+
+# 搜索大于1GB的文件
+find <dir> -size +1G
+
+# 查看目录下文件数量
+find <dir> | wc -l
 ```
 
 ## locate
@@ -1203,10 +1603,24 @@ updatedb
 
 在不同机器间复制文件，其中一个是本机器则不用写用户名和IP。
 
--r 递归目录
+-r 复制目录
+
+-P port 指定端口，默认端口22
+
+-q 复制过程不打印进度
 
 ```bash
 scp <user>@<ip>:<file> <user>@<ip>:<file>
+```
+
+## rsync
+
+在不同及其间复制文件，其中一个是本机器则不用写用户名和IP。与 scp 的区别在于 scp 是全量拷贝，而 rsync 默认只拷贝变动的文件。
+
+-r 复制目录
+
+```bash
+rsync <user>@<ip>:<file> <user>@<ip>:<file>
 ```
 
 ## sz
@@ -1446,6 +1860,8 @@ od <file>
 -w 打印匹配整行的
 
 -r 递归目录查找
+
+-q 用于 if 逻辑判断，不打印任何内容
 
 --line-buffered 缓冲输出
 
