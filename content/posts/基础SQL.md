@@ -5,7 +5,7 @@ draft: false
 showToc: true # 显示目录
 TocOpen: true # 自动展开目录
 categories: ["数据库"]
-tags: ["SQL"]
+tags: ["​关系型数据库","SQL"]
 ---
 
 # 1. 概述
@@ -128,7 +128,7 @@ ALTER TABLE <表> RENAME TO <表>;
 
 ```sql
 ALTER TABLE <表> ADD COLUMN <列> <类型>;
-ALTER TABLE <表> ADD COLUMN <列> <类型> after <列>;
+ALTER TABLE <表> ADD COLUMN <列> <类型> AFTER <列>;
 ```
 
 删除列：
@@ -241,7 +241,7 @@ SELECT <列列表> FROM (<SELECT>) <子查询>;
 * *：所有列
 * \<列\> AS \<key\>：为列或表设定别名，可被引用
 * \<字符串/数字/日期常量\> AS \<key\>：常量列
-* DISTINCT \<列\>：结果去重
+* DISTINCT \<列\>：结果去重，必须写在 select 的字段中的最前面
 * 运算表达式：+、-、*、/、%，含 NULL 列计算结果也是 NULL
 * CASE 表达式：CASE WHEN <表达式> THEN <表达式> WHEN <表达式> THEN <表达式> ... [ELSE <表达式>] END
 * 函数
@@ -336,6 +336,14 @@ EXPLAIN <SQL>;
 INSERT INTO <表> VALUES (<值列表>);
 INSERT INTO <表> (<列列表>) values(<值列表>) # 指定对应列的插入值
 INSERT INTO <表> <SELECT>; # 用查询的数据插入
+INSERT INTO <表> (<列列表>) values(<值列表>) ON DUPLICATE KEY UPDATE col1=v1, col2=v2; # 主键或唯一键冲突时更新指定列
+```
+
+更新行，该操作十分危险，要记得核对查询条件：
+
+```sql
+UPDATE <表> SET <列> = <表达式> [WHERE <条件>];
+UPDATE <表> SET <列> = <表达式>, <列> = <表达式> [WHERE <条件>]; # 更新多列
 ```
 
 删除行，该操作十分危险，要记得核对查询条件：
@@ -344,11 +352,17 @@ INSERT INTO <表> <SELECT>; # 用查询的数据插入
 DELETE FROM <表> [WHERE <条件>];
 ```
 
-更新行，该操作十分危险，要记得核对查询条件：
+全表删除：
 
 ```sql
-UPDATE <表> SET <列> = <表达式> [WHERE <条件>];
-UPDATE <表> SET <列> = <表达式>, <列> = <表达式> [WHERE <条件>]; # 更新多列
+# 删除数据保留空表，一行行删除，可回滚
+DELETE FROM <表>;
+
+# 删除数据保留空表，将表数据文件大小重置为初始大小，速度快，不记录log
+TRUNCATE TABLE <表>;
+
+# 删除表的所有数据和表结构，速度快，但消耗大量IO资源
+DROP TABLE <表>;
 ```
 
 # 6. 事务
@@ -366,10 +380,19 @@ BEGIN;
 COMMIT;
 ```
 
+设置保存点，以便回滚到保存点：
+
+```sql
+SAVEPOINT savepoint_name;
+```
+
 回滚：
 
 ```sql
 ROLLBACK;
+
+# 回滚至保存点
+ROLLBACK TO SAVEPOINT savepoint_name;
 ```
 
 # 7. 视图
@@ -389,3 +412,4 @@ DROP VIEW <视图>;
 # 8. 参考
 
 * [SQL基础教程](https://book.douban.com/subject/27055712/)
+
