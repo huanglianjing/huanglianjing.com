@@ -58,7 +58,7 @@ ssh <user>@,ip>
 ssh <user>@<ip>:<path>
 
 # 登录远程机器直接执行命令
-ssh <use>r@<ip> <cmd>
+ssh <user>@<ip> <cmd>
 ```
 
 ## sshpass
@@ -183,10 +183,17 @@ declare <var>=<value>
 
 ## export
 
-声明全局变量，在子进程也可用
+声明环境变量，在子进程也可访问，但子进程中对该变量的修改不会影响父进程。
 
 ```bash
 export <var>=<value>
+export <var>
+
+# 列出所有环境变量
+export -p
+
+# 取消导出
+export -n <var>
 ```
 
 ## nohup
@@ -257,6 +264,41 @@ history n
 ```bash
 env
 ```
+
+## set
+
+设置或取消 shell 环境和脚本的执行参数。
+
+```bash
+# 显示已定义的环境变量、局部变量和函数
+set
+
+# 进入调试模式，打印执行的命令和参数
+set -x
+
+# 退出调试模式
+set +x
+
+# 打印原始输入行
+set -v
+
+# 取消该选项
+set +v
+
+# 脚本任何命令返回非0时退出
+set -e
+
+# 使用未定义的变量时报错
+set -u
+
+# 将后续参数设置为参数
+set -- -file.txt # 设置为参数 $1
+
+# 设置参数
+set arg1 arg2 arg3 # 设置为参数 $1,$2,$3
+```
+
+
 
 ## uname
 
@@ -330,7 +372,7 @@ reboot
 # 修改当前用户密码
 passwd
 
-# 修改指定用户密码
+# 修改指定用户密码，只有 root 能使用
 passwd <user>
 ```
 
@@ -515,6 +557,14 @@ dos2unix <file>
 md5sum <file>
 ```
 
+## sha256sum
+
+计算文件 sha256
+
+```bash
+sha256sum <file>
+```
+
 # 5. 库文件
 
 ## ldd
@@ -576,13 +626,33 @@ readelf -d exe | grep 'NEEDED'
 strace <exe>
 ```
 
+## nm
+
+显示目标文件中的符号表信息，可查看可执行文件、共享库、目标文件。
+
+-a 所有符号，包括调试符号
+
+-g 仅外部符号
+
+-l 显示符号所在源代码行号
+
+```bash
+nm <file>
+```
+
 # 6. 进程
 
 ## top
 
 进程面板
 
+-u user 只显示该用户的进程
+
 -p pid 只显示该进程，可以带多个
+
+-d second 刷新频率
+
+-n iteration 刷新次数，达到次数后退出
 
 -H 线程模式
 
@@ -654,6 +724,8 @@ pstree -p 1234
 -a 列出进程id和执行命令
 
 -c 只输出匹配的进程数量
+
+-f 显示完成命令行，而不是进程名
 
 ```bash
 pgrep <process>
@@ -1156,6 +1228,12 @@ chmod +x a.sh
 chmod u+x a.sh
 ```
 
+如果同时修改的文件过多，可能会报错 too many open files，是因为打开的文件描述符超出了限制，可以临时提高限制：
+
+```bash
+ulimit -n 65536
+```
+
 ## chown
 
 修改文件或文件夹的所有者
@@ -1178,6 +1256,8 @@ chown <group> <file>
 ## umask
 
 新文件权限的补码
+
+-S 以符号类型方式显示新文件权限而非补码
 
 ```bash
 # 查险现在的补码
@@ -1381,6 +1461,17 @@ cd -
 pwd
 ```
 
+## dirname
+
+获取文件所在目录
+
+```bash
+dirname <file>
+
+# 获取执行脚本所在目录，用于变量赋值
+$(dirname $(readlink -f "$0"))
+```
+
 ## dirs
 
 显示目录栈，通过命令切换目录并将目录加入目录栈，以及移除目录栈内容，来记住之前的目录。
@@ -1512,6 +1603,18 @@ ln <oldfile> <newfile>
 ln -s <oldfile> <newfile>
 ```
 
+## readlink
+
+查看软链接的原文件
+
+-f 输出绝对路径，并解析路径中所有符号链接
+
+-e 输出绝对路径，并解析路径中所有符号链接，如果有路径不存在则报错
+
+```bash
+readlink <file>
+```
+
 ## wc
 
 统计文件的行数、单词数、字节数
@@ -1564,7 +1667,11 @@ stat <file>
 
 -size n/+n/-n 文件大小等于/大于/小于n，指定单位
 
+-type \<type\> 按文件类型查找，可以是 f（普通文件）、d（目录）、l（符号链接）
+
 -inum \<inode\> 查询文件inode
+
+-exec \<cmd\> 对查找到的文件执行命令
 
 ```bash
 # 列出目录下所有文件
@@ -1675,6 +1782,8 @@ ar cr liba.a a.o
 ## tar
 
 压缩工具
+
+-C path 指定解压目录
 
 ```bash
 # 压缩文件
@@ -1978,6 +2087,22 @@ cut -d '-' -f 2 a.log
 
 ```bash
 paste <files>
+```
+
+## split
+
+将文件切割成多个文件
+
+-b 指定分割文件的大小，单位可以是 b、k、m 等
+
+-l 以行数来切割
+
+```bash
+# 按指定大小切割文件
+split -b 1m <file> <prefix>
+
+# 按指定行数切割文件
+split -l 100 <file> <prefix>
 ```
 
 ## sort
