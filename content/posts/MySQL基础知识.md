@@ -24,24 +24,147 @@ MySQL 服务器的基本架构主要分为 Server 层和存储引擎两部份。
 show engines;
 ```
 
-## 1.1 Buffer Pool
+# 2. 存储引擎
 
-InnoDB 在启动时会向操作系统申请一片称为 Buffer Pool 的连续内存，用于缓存从磁盘加载的索引数据页。
+MySQL 的主要存储引擎有 InnoDB、MyISAM 和 Memory 等。
 
-它的默认大小为 128MB，也可以通过配置来指定大小。
+在 5.5 版本之前默认存储引擎是 MyISAM，从 5.5 版本开始默认存储引擎换成了 InnoDB。
+
+对它们的一个简单对比：
+
+| 特性       | InnoDB                   | MyISAM               | Memory                 |
+| ---------- | ------------------------ | -------------------- | ---------------------- |
+| 事务支持   | 支持                     | 不支持               | 不支持                 |
+| 锁         | 行级锁+表级锁            | 表级锁               | 表级锁                 |
+| 数据持久化 | 高，支持崩溃恢复         | 低，易损坏           | 无                     |
+| 外键       | 支持                     | 不支持               | 不支持                 |
+| 性能       | 较稳定，适合大数据量     | 查询速度快，写入受限 | 极快，数据量受内存限制 |
+| 适用场景   | 高并发写、事务控制、OLTP | 读多写少、全文索引   | 临时表、缓存           |
+
+## 2.1 InnoDB
+
+InnoDB 是 MySQL 从 5.5 版本开始至今的默认存储引擎。
+
+InnoDB 完全支持 ACID 事务，包括回滚、崩溃恢复等，采用行级锁和 MVCC，适合高并发写入操作，支持外键约束，内置了 redo log 和 undo log，保证数据的持久性。
+
+适用于 OLTP 应用如电商、支付等频繁读写数据的高并发场景，以及需要外键约束和事务控制的场合。
+
+InnoDB 的架构设计包含内存架构（In-Memory Structures）和磁盘架构（On-Disk Structures）两大块。
+
+![](https://blog-1304941664.cos.ap-guangzhou.myqcloud.com/article_material/database/mysql_innodb_architecture.png)
+
+### 2.1.1 Buffer Pool
+
+Buffer Pool 是 InnoDB 存储引擎的核心内存组件，通过将表和索引数据从硬盘读取出来缓存在内存，减少磁盘 I/O 操作，提升数据库读写性能。
+
+**读写操作**
+
+当查询需要访问某数据页时，InnoDB 首先检查该页是否在 Buffer Pool 中，如果存在（缓存命中），则直接返回内存中的数据，不需要读取磁盘，如果不存在（缓存未命中），则从磁盘读取该页到 Buffer Pool 中再返回。
+
+当发生数据插入、删除、更新时，直接修改 Buffer Pool 中的数据页，修改过的页称为脏页，由后台线程异步刷新到磁盘。这种延迟写入策略将多次随机磁盘写操作合并，以提升数据库的写入性能。
+
+**内部结构**
+
+Buffer Pool 内部以页（Page）为单位进行管理，缓存页对应硬盘中的数据页，默认大小为 16KB。每个缓存页对应一个控制块（Control Block），它存储缓存页的元数据如表空间号、页号、锁信心等。此外还有几个管理链表，free 链表管理空闲的缓冲页，flush 链表管理被修改待刷新到磁盘的脏页，LRU 链表用于在没有空闲缓冲页时淘汰缓冲页。
+
+**淘汰算法**
+
+Buffer Pool 使用 LRU（最近最少使用）算法的变种作为缓存淘汰策略，在缓存满时淘汰最近最少使用的部份页，来释放空间。
+
+LRU 列表分为两个子列表，其中 5/8 的部份保存最近频繁访问的数据页，另外 3/8 部份保存访问频率较低的数据页。当 InnoDB 将数据页写入 Buffer Pool 时，如果是 SQL 发起的操作，将它插入新列表的头部，如果是 InnoDB 发起的预读操作，将它插入旧列表的头部。两个子列表中的页面随着数据插入逐渐向后移，并在移到旧列表尾部后被淘汰掉。
+
+![](https://blog-1304941664.cos.ap-guangzhou.myqcloud.com/article_material/database/mysql_innodb_buffer_pool_list.png)
+
+**配置大小**
+
+Buffer Pool 的默认大小为 128MB，也可以通过配置 innodb_buffer_pool_size 来指定大小，尽可能调大可以提升 MySQL 的性能。对于专门用于运行 MySQL 的服务器，建议将其设置为总内存的 50% - 80%，但如果设置的过大导致开始使用 swap 内存，反而会降低性能。
 
 ```ini
 [server]
 innodb_buffer_pool_size = 268435456
 ```
 
-Buffer Pool 内存空间由控制块和缓冲页组成，它们一一对应，剩余的空间则是碎片。
+**Change Buffer**
 
-InnoDB 通过几个链表来管理 Buffer Pool，free 链表管理空闲的缓冲页，flush 链表管理被修改待刷新到磁盘的脏页，LRU 链表用于在没有空闲缓冲页时淘汰缓冲页。
+Change Buffer 是 Buffer Pool 的一部份，用于缓存当二级索引页不在 Buffer Pool 中时的写操作。
 
-# 2. 编码
+对于插入、删除、更新操作产生的缓冲更改，若目标页不在 Buffer Pool，将变更记录写入 Change Buffer 生成 Redo Log 以保证持久化，后续读取该索引页时，将 Change Buffer 中的变更合并到 Buffer Pool，触发异步刷盘。
 
-## 2.1 字符集和比较规则
+![](https://blog-1304941664.cos.ap-guangzhou.myqcloud.com/article_material/database/mysql_innodb_change_buffer.png)
+
+对二级索引的插入、删除、更新操作往往顺序较为随机，Change Buffer 可以避免从磁盘读取二级索引页至 Buffer Pool 产生的大量随机访问 I/O。
+
+在磁盘上，Change Buffer 属于系统表空间的一部份，当服务器关闭时，索引变更将在此处缓冲存储。
+
+**Adaptive Hash Index**
+
+Adaptive Hash Index（AHI，自适应哈希索引）是 InnoDB 内部自动创建和管理的哈希索引，用于优化等值查询的性能。
+
+它会将频繁访问的索引键映射到哈希表，无需使用 B+ 树的逐层查找，直接定位到目标数据页。当不再被频繁访问时会被从哈希表移除，重新通过 B+ 树查找数据页。
+
+建议在以等值查询的 OLTP 使用场景中开启。
+
+### 2.1.2 Log Buffer
+
+Log Buffer 用于临时缓存重做日志（Redo Log）。
+
+所有事务对数据的修改，对应的 Redo Log 会先写入 Log Buffer，然后按策略批量刷新到磁盘中的 Redo Log 文件中。
+
+Log Buffer 能减少磁盘 I/O 次数，同时提升事务的响应速度。
+
+### 2.1.3 Tablespace
+
+Tablespace（表空间）是 InnoDB 逻辑结构的最高层，所有数据都存放在表空间中。
+
+当配置了 innodb_file_per_table=ON（默认），则每张表的数据会单独放到一个独立表空间内。如果设置为 OFF 则会都放到系统表空间中，容易使文件变得非常大，不建议使用。
+
+**System Tablespace**
+
+System Tablespace（系统表空间）保存在一个名为 ibdata1 的文件，这里还保存了 Change Buffer 在磁盘上的数据、回滚信息、系统事务信息。
+
+**File-Per-Table Tablespace**
+
+File-Per-Table Tablespace（独立表空间）是默认的表空间类型，一个表对应磁盘上的一个 .ibd文件。
+
+表空间分为多个 segment（段），有管理叶子节点的段和非叶子节点的段。segment 中包含了 extent（区），每个区是一组连续的 page（页），默认有 64 个页，大小为 1MB。每个 page（页）包含了多个 row（行），大小为 16KB。
+
+![](https://blog-1304941664.cos.ap-guangzhou.myqcloud.com/article_material/database/mysql_innodb_tablespace_segment.jpg)
+
+**General Tablespace**
+
+General Tablespace（通用表空间）是一种共享表空间，能存储多张表的数据，通过 CREATE TABLESPACE 创建。
+
+**Undo Tablespace**
+
+Undo Tablespace（撤销表空间）用于管理事务回滚日志（Undo Log）。
+
+**Temporary Tablespace**
+
+Temporary Tablespace（临时表空间）存储创建的临时表和临时表的回滚段。
+
+### 2.1.4 Double Write Buffer
+
+InnoDB 的页大小为 16KB，而操作系统的页是 4KB 或 8KB，将一页数据刷到磁盘要写多页，并非原子操作，可能存在写了部份磁盘的页时发生断电。
+
+InnoDB 会先把要刷到磁盘的页先写到内存中的 Double Write Buffer（双写缓冲），它包含内存和磁盘的部份，它会将内存中的部份同步到磁盘的部份。然后将一页数据写到磁盘中的多个页，如果发生崩溃，则从 Double Write Buffer 的磁盘部份取出进行崩溃恢复。
+
+## 2.2 MyISAM
+
+MyISAM 是 MySQL 在 5.5 版本之前的默认存储引擎。
+
+MyISAM 不支持事务，没有崩溃恢复机制，采用表级锁，支持全文索引。
+
+适用于只读或读多写少的场景，如数据仓库、日志存储、数据统计、报告生成等业务。
+
+## 2.3 Memory
+
+Memory 所有数据存储在内存中，不支持持久化，采用表级锁，采用固定长度行存储。
+
+适用于临时表和缓存场合。️
+
+# 3. 编码
+
+## 3.1 字符集和比较规则
 
 字符集用于表示二进制数据和字符串的映射关系。
 
@@ -81,7 +204,7 @@ ALTER TABLE <table> CHARACTER SET <charset> COLLATE <collation>;
 CREATE TABLE <table> (<row> <rowtype> CHARACTER SET <charset> COLLATE <collation>);
 ```
 
-## 2.2 InnoDB 行格式
+## 3.2 InnoDB 行格式
 
 InnoDB 存储引擎支持多种行格式，它们在存储空间、空间效率、适用场景上不同。
 
@@ -102,7 +225,7 @@ ALTER TABLE <table> ROW_FORMAT=<row type>;
 
 MySQL 从 5.7 开始默认行格式为 DYNAMIC，到了 8.0 移除了 REDUNDANT 和 COMPACT 的支持。频繁更新的表适合用 DYNAMIC，数据量大且只读适合用 COMPRESSED。
 
-# 3. 数据库
+# 4. 数据库
 
 MySQL 会自动创建几个系统数据库，其中包含了 MySQL 服务器运行所需的信息和运行状态。
 
@@ -111,7 +234,7 @@ MySQL 会自动创建几个系统数据库，其中包含了 MySQL 服务器运�
 * performance_schema：MySQL 服务器运行过程的状态信息，统计最近执行的语句、每阶段话费的时间和内存使用情况；
 * sys：通过视图把 information_schema 和 performance_schema 结合起来；
 
-# 4. 执行计划
+# 5. 执行计划
 
 MySQL 通过查询执行计划来查看语句执行的具体方式，在语句前加上 EXPLAIN 关键字查看。虽然增删改查语句都能查看，但是主要还是用于 SELECT 语句上。
 
@@ -161,7 +284,7 @@ explain format=json select * from user where age = 10;
 * filtered：使用索引扫描区间获取到的记录数，再满足其他搜索条件后，预测记录数占前者的百分比；
 * Extra：额外信息；
 
-# 5. 主备同步
+# 6. 主备同步
 
 MySQL 主备同步（Master-Slave Replication）通过将主库（Master）的数据同步到备库（Slave）来实现数据的冗余和故障切换。
 
@@ -171,8 +294,9 @@ MySQL 主备同步（Master-Slave Replication）通过将主库（Master）的�
 
 ![](https://blog-1304941664.cos.ap-guangzhou.myqcloud.com/article_material/database/mysql_master_slave.jpg)
 
-# 6. 参考
+# 7. 参考
 
 * [01 | 基础架构：一条SQL查询语句是如何执行的？-MySQL 实战 45 讲-极客时间](https://time.geekbang.org/column/article/68319)
 * [《MySQL是怎样运行的》](https://book.douban.com/subject/35231266/)
+* [MySQL :: MySQL 8.0 Reference Manual :: 17 The InnoDB Storage Engine](https://dev.mysql.com/doc/refman/8.0/en/innodb-storage-engine.html)
 
