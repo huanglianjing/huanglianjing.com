@@ -1,5 +1,5 @@
 ---
-title: "Linux常用命令"
+title: "Linux基础命令用法"
 date: 2023-08-10T22:53:37+08:00
 draft: false
 showToc: true # 显示目录

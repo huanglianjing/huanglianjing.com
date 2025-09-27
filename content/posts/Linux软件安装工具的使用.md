@@ -1,5 +1,5 @@
 ---
-title: "Linux软件安装工具"
+title: "Linux软件安装工具的使用"
 date: 2025-05-17T23:31:47+08:00
 draft: false
 showToc: true # 显示目录

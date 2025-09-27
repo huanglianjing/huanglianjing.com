@@ -1,5 +1,5 @@
 ---
-title: "macOS快捷键与常用软件"
+title: "macOS的快捷键与常用软件"
 date: 2023-07-21T02:37:29+08:00
 draft: false
 showToc: true # 显示目录

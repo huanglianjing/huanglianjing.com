@@ -1,5 +1,5 @@
 ---
-title: "MySQL配置与使用"
+title: "MySQL安装与使用"
 date: 2025-03-02T23:42:18+08:00
 draft: false
 showToc: true # 显示目录

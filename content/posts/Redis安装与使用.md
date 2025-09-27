@@ -1,11 +1,11 @@
 ---
-title: "Redis安装、配置与使用"
+title: "Redis安装与使用"
 date: 2021-12-18T22:50:22+08:00
 draft: false
 showToc: true # 显示目录
 TocOpen: true # 自动展开目录
 categories: ["数据库"]
-tags: ["KV数据库","Redis"]
+tags: ["键值数据库","Redis"]
 ---
 
 # 1. 安装

@@ -5,7 +5,7 @@ draft: false
 showToc: true # 显示目录
 TocOpen: true # 自动展开目录
 categories: ["数据库"]
-tags: ["KV数据库","Redis"]
+tags: ["键值数据库","Redis"]
 ---
 
 # 1. 简介
@@ -1153,4 +1153,5 @@ slaveof no one
 # 6. 参考
 
 * [《Redis开发与运维》](https://book.douban.com/subject/26971561/)
+* [《Redis深度历险：核心原理与应用实践》](https://book.douban.com/subject/30386804/)
 

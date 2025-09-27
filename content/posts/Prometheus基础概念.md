@@ -24,9 +24,29 @@ Prometheus 的主要特性有：
 * 通过服务发现或静态配置来发现目标
 * 支持多种图形和仪表板模式
 
-Prometheus 适用于纯数字时间序列的记录，对多维数据收集和查询，系统注重可靠性，能帮助定位诊断问题，Prometheus 服务器独立不依赖其它网络存储或远程服务。但同时，Prometheus 的统计不是 100% 准确的，手机的数据可能不够详细和完整，对这方面有要求的可以使用其它系统收集和分析精确数据，使用 Prometheus 来进行其余的监控。
+Prometheus 适用于纯数字时间序列的记录，对多维数据收集和查询，系统注重可靠性，能帮助定位诊断问题，Prometheus 服务器独立不依赖其它网络存储或远程服务。
 
-## 1.1 架构
+但需要注意，Prometheus 的统计不是 100% 准确的，收集的数据可能不够详细和完整，对这方面有要求的可以使用其它系统收集和分析精确数据，使用 Prometheus 来进行其余的监控。
+
+Prometheus 对于监控数据的采集和计算，关注的是趋势和显著异常，因此记录并非百分百准确记录，计算结果存在误差，这是一种在高性能、低开销和可扩展性之间权衡的结果，误差来源有：
+
+* 监控目标记录的数据保存在内存，重启会重置记录，未抓取的那段时间数据会丢失；
+* 服务器以固定的时间间隔抓取数据，如 15秒或 1分钟一次，短暂波动如瞬时流量尖峰或错误可能无法被记录；
+* 查询计算时，基于时间范围和外推法来估算速率或增量，会有精度偏差，且可能出现小数；
+
+Prometheus 的使用场景：
+
+* 云原生与容器化环境监控：发现并监控集群中的 Pod、Service、Node 等动态资源；
+* 服务可用性和性能监控，如请求频率、成功率、接口时延等指标；
+* 通过 Node Exporter 监控机器资源，如 CPU、内存、磁盘I/O、网络流量等；
+
+不适合的场景：
+
+* 要求完全精确的统计指标；
+* 存储和查询长期历史数据；
+* 日志记录和事件存储；
+
+# 2. 架构
 
 Prometheus 的架构如下图所示。
 
@@ -40,7 +60,19 @@ PushGateway 可以将无法通过拉取方式获得的内部网络的监控数�
 
 AlertManager 支持基于 PromQL 的告警规则，集成了邮件、企业微信、Slack 等方式的通知。
 
-## 1.2 数据模型
+## 2.1 TSDB
+
+Prometheus 内置了一个专门为监控场景设计和优化的 TSDB 存储引擎。
+
+核心特性有：
+
+* 数据每 2 小时保存至磁盘的一个块（Block），每个块拥有自己的索引和元数据文件，后台进程通过XOR差分编码算法进一步压缩；
+* 通过预写日志（WAL）机制，确保数据的持久性和崩溃恢复能力；
+* 通过倒排索引实现数据快速查询；
+
+但是内置的 TSDB 存储引擎设计为单节点本地存储，存储容量和持久性受单节点限制，不适合存储长期大量的监控数据。
+
+## 2.2 数据模型
 
 Prometheus 将所有数据存储为时间序列，即同一指标（metrics）和同一组标签（label）维度的基于时间戳流的值。通过对指标的查询，还可以生成临时的派生时间序列作为查询结果。Prometheus 会将所有采集到的样本数据以时间序列（time series）的方式保存在内存中的时序数据库 TSDB 中，并且定时保存到硬盘上。
 
@@ -49,13 +81,13 @@ Prometheus 将所有数据存储为时间序列，即同一指标（metrics）�
 指标的命名有一些推荐建议：
 
 * 指标名称前缀最好指代所属应用的方面，如 http_requests_total、api_request_seconds
-* 应该包含基本单位，且是负数形式，如 seconds、requests、bytes 等
+* 应该包含基本单位，且是复数形式，如 seconds、requests、bytes 等
 * Counter 类型的指标推荐使用 _total 作为后缀
 
 标签（label）用于标记一个指标的特定维度，一个指标可以拥有多个标签，不同的标签值的组合都会创建新的时间序列。标签的名称可以包含大小写字母、数字和下划线，但是不能以数字开头，如 `method`。
 
 ```
-<metric name>{<label name>=<label value>, ...}
+<metric_name>{<label_name>=<label_value>, ...}
 ```
 
 例如，一个指标具有如下三种不同组合的标签值，Prometheus 会分别为它们生成 3 个时间序列。
@@ -78,7 +110,7 @@ http_requests_total{method="POST", handler="/set"}
     <------------------ 时间 ---------------->
 ```
 
-## 1.3 指标类型
+## 2.3 指标类型
 
 Prometheus 支持四种指标类型，它们仅在客户端进行区分，服务器端实际上会把它们都展平为无类型的时间序列。
 
@@ -92,17 +124,38 @@ Gauge（仪表盘）表示可以任意上升或下降的单个数值。它用于
 
 **Histogram**
 
-Histogram（直方图）对测量值进行采样并分配到自定义的几个累积的桶中，以计算指标的平均值、加权平均数、分位数（P80、P90、P99 等）。它可以用于请求时间、响应结果大小等测量值，可以很方便地计算服务的平均请求时间、P90 请求时间等性能指标。
+Histogram（直方图）对测量值进行采样并分配到自定义的几个桶中，以计算指标的平均值、加权平均数、分位数（P80、P90、P99 等）。它可以用于请求时间、响应结果大小等测量值，可以很方便地计算服务的平均请求时间、P90 请求时间等性能指标。
 
-对于一个 Histogram 类型的指标 m 来说，会在数据拉取时生成以下几个时间序列：
+对于一个 Histogram 类型的指标 `<metric_name>` 来说，会在数据拉取时生成以下几个时间序列：
 
-* m_bucket{le="upper inclusive bound"}：根据指标定义时的设置，分为若干个计数器分桶，观测值根据分桶的分界值，会在相应的一或多个桶累积计数。例如有 `le="100"`、`le="200"`、`le="300"`、`le="+Inf"`几个桶，它们分别代表在 `(-Inf,100]`、`(-Inf,200]`、`(-Inf,300]`、`(-Inf,+Inf)` 这几个范围的计数，实际观测值 220，将会令后两个分桶计数加一
-* m_sum：所有观测值之和
-* m_count：已有的观测值数量，等同于 `m_bucket{le="+Inf"}`
+* `<metric_name>`_bucket{le="upper inclusive bound"}：根据指标定义时的设置，分为若干个计数器分桶。观测值根据分桶的分界值，不是在归属范围的某个桶累积计数，而是在最靠后的一或多个桶累积计数。例如有 `le="100"`、`le="200"`、`le="300"`、`le="+Inf"`几个桶，它们分别代表在 `(-Inf,100]`、`(-Inf,200]`、`(-Inf,300]`、`(-Inf,+Inf)` 这几个范围的计数，实际观测值 220，将会令后两个分桶计数加一
+* `<metric_name>`_sum：所有观测值之和
+* `<metric_name>`_count：已有的观测值数量，等同于 `m_bucket{le="+Inf"}`
+
+一个例子，假设指标 request_latency_seconds 有 100 次观测值，每个观测值分布在 100 - 500 之间，则会在以下时间序列中记录有值：
+
+```
+request_latency_seconds_bucket{le="100"} 0.0
+request_latency_seconds_bucket{le="200"} 31.0
+request_latency_seconds_bucket{le="300"} 87.0
+request_latency_seconds_bucket{le="+Inf"} 100.0
+request_latency_seconds_count 100.0
+request_latency_seconds_sum 32705.0
+```
+
+通过 histogram_quantile 函数来计算分位数时，其实是通过现有的各个分桶的指标值进行估算，来得出如 P90 的百分位的值，分桶的数量越多、分桶设置得越合理，就能更准确地预估百分位数。
+
+源码中的计算公式如下：
+
+```go
+return bucketStart + (bucketEnd-bucketStart)*float64(rank/count)
+```
 
 **Summary**
 
 Summary（摘要）类似于 Histogram，也会对观察值结果分桶拆样和统计观察值数量、观察值总和，但它还可以根据配置计算滑动时间窗口上的分位数。它可以用于请求时间、响应结果大小等测量值。
+
+Summary 需要预定义要计算的分位数，在客户端计算好分位数，且只能查询预订好的分位数。只有用于监控单个实例且非常精确的分位数，才建议使用 Summary，否则应该避免使用。
 
 对于一个 Summary 类型的指标 m 来说，会在数据拉取时生成以下几个时间序列：
 
@@ -110,9 +163,11 @@ Summary（摘要）类似于 Histogram，也会对观察值结果分桶拆样和
 * m_sum：所有观测值之和
 * m_count：已有的观测值数量
 
-## 1.4 作业和实例
+## 2.4 作业和实例
 
-一个可以拉取指标数据的端点称为实例（instance），通常是某个进程。一系列的具有相同目的的实例的集合称为作业（job），如同一个程序在不同容器的多个部署的集合。
+实例（instance）是一个可以拉取指标数据的端点，通常是一个进程。
+
+作业（job）是一组具有相同职责的实例的集合，是一个程序在不同容器的多个部署的集合。
 
 例如，一个服务器程序具有四个实例：
 
@@ -129,9 +184,9 @@ Prometheus 在拉取数据时，会自动地添加一些标签用于识别区分
 * job：所属作业的名称
 * instance：所属实例的名称，格式为 `<host>:<port>`
 
-# 2. 安装和使用
+# 3. 安装和使用
 
-## 2.1 服务器
+## 3.1 服务器
 
 Prometheus 服务器主要负责数据的收集、存储和查询支持，它本身也会上报一些相关的监控数据。
 
@@ -197,7 +252,7 @@ Prometheus Server 启动参数详情可参考：https://prometheus.io/docs/prome
 
 在浏览器打开 http://localhost:9090 可以使用指标的表达式，通过表格或图标的方式可视化地查询指标，或者可以访问 http://localhost:9090/metrics 获取所有指标的最新值。
 
-## 2.2 Node Exporter
+## 3.2 Node Exporter
 
 Prometheus 服务器主要负责数据的收集、存储和查询支持，我们需要用到 Exporter 来监控一些机器的监测数据如 CPU 使用率等。
 
@@ -262,7 +317,7 @@ node exporter 主要监控的指标有：
 * node_network_*：网络带宽
 * go_*：node exporter 中 Go 相关指标
 
-## 2.3 Grafana
+## 3.3 Grafana
 
 虽然 Prometheus 提供了一个基础的 UI 界面网页，可以用于查询验证数据，但是有必要使用更成熟的数据可视化平台作为监控面板，这里推荐使用 Grafana。
 
@@ -289,7 +344,7 @@ brew services start grafana
 
 ![](https://blog-1304941664.cos.ap-guangzhou.myqcloud.com/article_material/database/grafana_test_promql.png)![](https://blog-1304941664.cos.ap-guangzhou.myqcloud.com/article_material/database/grafana_my_dashboard.png)
 
-## 2.4 AlertManager
+## 3.4 AlertManager
 
 首先定义告警规则文件，test.rules 例子如下：
 
@@ -322,13 +377,13 @@ AlertManager 默认端口 9093，可以在浏览器访问 http://localhost:9093 
 
 具体部署方式参考：https://yunlzheng.gitbook.io/prometheus-book/parti-prometheus-ji-chu/alert/install-alert-manager
 
-# 3. PromQL
+# 4. PromQL
 
 Prometheus 通过指标名称以及对应的一组标签唯一定义一条时间序列，指标名称反映了监控样本的基本标识，而标签则在这个基本特征上为采集到的数据提供了多种特征维度。用户可以基于这些特征维度过滤、聚合、统计，从而产生新的计算后的一条时间序列。
 
 Prometheus 定义了它的查询语言 PromQL，通过 PromQL 用户可以非常方便地对监控样本数据进行统计分析。PromQL 支持常见的运算操作符，还提供了大量的内置函数可以实现对数据的高级处理。
 
-## 3.1 查询时间序列
+## 4.1 查询时间序列
 
 直接使用指标名称时，查询该指标下的所有时间序列。这时候花括号可以不写出来。
 
@@ -381,7 +436,7 @@ http_request_total{} offset 20m
 http_request_total{}[3h] offset 1d
 ```
 
-## 3.2 操作符
+## 4.2 操作符
 
 指标间支持加减乘除（+-*/）、余数（%）、幂运算（^）的数学运算符。对于瞬时向量和标量的计算，会将瞬时向量的每个样本值与标量进行计算。对于两个瞬时向量的计算，会依次对双方标签完全一致的向量元素进行匹配和计算。
 
@@ -416,7 +471,7 @@ metrics1 or metrics2
 metrics1 unless metrics2
 ```
 
-## 3.3 聚合操作
+## 4.3 聚合操作
 
 聚合操作包含有：
 
@@ -456,7 +511,7 @@ topk(5, http_requests_total)
 quantile(0.9, http_requests_total)
 ```
 
-## 3.4 内置函数
+## 4.4 内置函数
 
 increase 函数用于 Counter 指标，对于时间序列，计算每个样本从样本时间的指定时间前到样本时间的增长量。
 
@@ -509,7 +564,7 @@ histogram_quantile(0.9, http_request_duration_seconds_bucket)
 
 更多内置函数可以参考：https://prometheus.io/docs/prometheus/latest/querying/functions/
 
-# 4. 参考
+# 5. 参考
 
 * [Overview | Prometheus](https://prometheus.io/docs/introduction/overview/)
 * [prometheus-book](https://yunlzheng.gitbook.io/prometheus-book)

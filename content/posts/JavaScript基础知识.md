@@ -1,5 +1,5 @@
 ---
-title: "JavaScript基础"
+title: "JavaScript基础知识"
 date: 2021-10-07T03:10:11+08:00
 draft: false
 showToc: true # 显示目录

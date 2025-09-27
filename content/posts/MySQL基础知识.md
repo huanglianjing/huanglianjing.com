@@ -8,7 +8,24 @@ categories: ["数据库"]
 tags: ["​关系型数据库","MySQL"]
 ---
 
-# 1. 基础架构
+# 1. 简介
+
+![](https://blog-1304941664.cos.ap-guangzhou.myqcloud.com/article_material/database/mysql_logo.webp)
+
+MySQL 是一款开源的关系型数据库管理系统（RDBMS），以高性能、可靠性、易用性和低成本著称。
+
+MySQL 支持多种存储引擎：
+
+* InnoDB 是默认引擎，支持事务、行级锁、外键约束、崩溃恢复能力，适用于高可靠性和并发控制场景；
+* MyISAM 则提供更高的读性能，适用于读密集型操作，但不支持事务和行级锁；
+* Memory 将数据保存在内存，不具备持久化能力，适用于临时表和缓存；
+* Archive 用于存储大量的归档数据；
+
+MySQL 支持单点、复制、集群等多种部署方式，支持运行在不同的操作系统。
+
+MySQL 主要应用于 Web 应用、中小型网站、嵌入式系统等使用场景。
+
+# 2. 基础架构
 
 MySQL 属于客户端/服务器架构（C/S 架构），客户端向服务器发起请求，服务器负责响应客户端的请求、对存储的数据进行处理，服务器程序进程称为 MySQL 数据库实例（instance），可以同时处理多个客户端的连接和请求。
 
@@ -24,7 +41,7 @@ MySQL 服务器的基本架构主要分为 Server 层和存储引擎两部份。
 show engines;
 ```
 
-# 2. 存储引擎
+# 3. 存储引擎
 
 MySQL 的主要存储引擎有 InnoDB、MyISAM 和 Memory 等。
 
@@ -41,7 +58,7 @@ MySQL 的主要存储引擎有 InnoDB、MyISAM 和 Memory 等。
 | 性能       | 较稳定，适合大数据量     | 查询速度快，写入受限 | 极快，数据量受内存限制 |
 | 适用场景   | 高并发写、事务控制、OLTP | 读多写少、全文索引   | 临时表、缓存           |
 
-## 2.1 InnoDB
+## 3.1 InnoDB
 
 InnoDB 是 MySQL 从 5.5 版本开始至今的默认存储引擎。
 
@@ -53,7 +70,7 @@ InnoDB 的架构设计包含内存架构（In-Memory Structures）和磁盘架�
 
 ![](https://blog-1304941664.cos.ap-guangzhou.myqcloud.com/article_material/database/mysql_innodb_architecture.png)
 
-### 2.1.1 Buffer Pool
+### 3.1.1 Buffer Pool
 
 Buffer Pool 是 InnoDB 存储引擎的核心内存组件，通过将表和索引数据从硬盘读取出来缓存在内存，减少磁盘 I/O 操作，提升数据库读写性能。
 
@@ -104,7 +121,7 @@ Adaptive Hash Index（AHI，自适应哈希索引）是 InnoDB 内部自动创�
 
 建议在以等值查询的 OLTP 使用场景中开启。
 
-### 2.1.2 Log Buffer
+### 3.1.2 Log Buffer
 
 Log Buffer 用于临时缓存重做日志（Redo Log）。
 
@@ -112,7 +129,7 @@ Log Buffer 用于临时缓存重做日志（Redo Log）。
 
 Log Buffer 能减少磁盘 I/O 次数，同时提升事务的响应速度。
 
-### 2.1.3 Tablespace
+### 3.1.3 Tablespace
 
 Tablespace（表空间）是 InnoDB 逻辑结构的最高层，所有数据都存放在表空间中。
 
@@ -142,13 +159,13 @@ Undo Tablespace（撤销表空间）用于管理事务回滚日志（Undo Log）
 
 Temporary Tablespace（临时表空间）存储创建的临时表和临时表的回滚段。
 
-### 2.1.4 Double Write Buffer
+### 3.1.4 Double Write Buffer
 
 InnoDB 的页大小为 16KB，而操作系统的页是 4KB 或 8KB，将一页数据刷到磁盘要写多页，并非原子操作，可能存在写了部份磁盘的页时发生断电。
 
 InnoDB 会先把要刷到磁盘的页先写到内存中的 Double Write Buffer（双写缓冲），它包含内存和磁盘的部份，它会将内存中的部份同步到磁盘的部份。然后将一页数据写到磁盘中的多个页，如果发生崩溃，则从 Double Write Buffer 的磁盘部份取出进行崩溃恢复。
 
-## 2.2 MyISAM
+## 3.2 MyISAM
 
 MyISAM 是 MySQL 在 5.5 版本之前的默认存储引擎。
 
@@ -156,15 +173,15 @@ MyISAM 不支持事务，没有崩溃恢复机制，采用表级锁，支持全�
 
 适用于只读或读多写少的场景，如数据仓库、日志存储、数据统计、报告生成等业务。
 
-## 2.3 Memory
+## 3.3 Memory
 
 Memory 所有数据存储在内存中，不支持持久化，采用表级锁，采用固定长度行存储。
 
 适用于临时表和缓存场合。️
 
-# 3. 编码
+# 4. 编码
 
-## 3.1 字符集和比较规则
+## 4.1 字符集和比较规则
 
 字符集用于表示二进制数据和字符串的映射关系。
 
@@ -204,7 +221,7 @@ ALTER TABLE <table> CHARACTER SET <charset> COLLATE <collation>;
 CREATE TABLE <table> (<row> <rowtype> CHARACTER SET <charset> COLLATE <collation>);
 ```
 
-## 3.2 InnoDB 行格式
+## 4.2 InnoDB 行格式
 
 InnoDB 存储引擎支持多种行格式，它们在存储空间、空间效率、适用场景上不同。
 
@@ -225,7 +242,7 @@ ALTER TABLE <table> ROW_FORMAT=<row type>;
 
 MySQL 从 5.7 开始默认行格式为 DYNAMIC，到了 8.0 移除了 REDUNDANT 和 COMPACT 的支持。频繁更新的表适合用 DYNAMIC，数据量大且只读适合用 COMPRESSED。
 
-# 4. 数据库
+# 5. 数据库
 
 MySQL 会自动创建几个系统数据库，其中包含了 MySQL 服务器运行所需的信息和运行状态。
 
@@ -234,7 +251,7 @@ MySQL 会自动创建几个系统数据库，其中包含了 MySQL 服务器运�
 * performance_schema：MySQL 服务器运行过程的状态信息，统计最近执行的语句、每阶段话费的时间和内存使用情况；
 * sys：通过视图把 information_schema 和 performance_schema 结合起来；
 
-# 5. 执行计划
+# 6. 执行计划
 
 MySQL 通过查询执行计划来查看语句执行的具体方式，在语句前加上 EXPLAIN 关键字查看。虽然增删改查语句都能查看，但是主要还是用于 SELECT 语句上。
 
@@ -284,7 +301,7 @@ explain format=json select * from user where age = 10;
 * filtered：使用索引扫描区间获取到的记录数，再满足其他搜索条件后，预测记录数占前者的百分比；
 * Extra：额外信息；
 
-# 6. 主备同步
+# 7. 主备同步
 
 MySQL 主备同步（Master-Slave Replication）通过将主库（Master）的数据同步到备库（Slave）来实现数据的冗余和故障切换。
 
@@ -294,9 +311,10 @@ MySQL 主备同步（Master-Slave Replication）通过将主库（Master）的�
 
 ![](https://blog-1304941664.cos.ap-guangzhou.myqcloud.com/article_material/database/mysql_master_slave.jpg)
 
-# 7. 参考
+# 8. 参考
 
-* [01 | 基础架构：一条SQL查询语句是如何执行的？-MySQL 实战 45 讲-极客时间](https://time.geekbang.org/column/article/68319)
-* [《MySQL是怎样运行的》](https://book.douban.com/subject/35231266/)
 * [MySQL :: MySQL 8.0 Reference Manual :: 17 The InnoDB Storage Engine](https://dev.mysql.com/doc/refman/8.0/en/innodb-storage-engine.html)
+* [MySQL 实战 45 讲](https://time.geekbang.org/column/intro/100020801)
+* [《MySQL是怎样运行的》](https://book.douban.com/subject/35231266/)
+* [《MySQL技术内幕：InnoDB存储引擎》](https://book.douban.com/subject/24708143/)
 

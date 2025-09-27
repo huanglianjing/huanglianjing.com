@@ -1,5 +1,5 @@
 ---
-title: "常用数据格式：JSON、XML、YAML、TOML"
+title: "常用数据格式语法介绍：JSON、XML、YAML、TOML"
 date: 2023-09-13T19:51:37+08:00
 draft: false
 showToc: true # 显示目录

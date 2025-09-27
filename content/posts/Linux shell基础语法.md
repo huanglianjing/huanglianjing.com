@@ -1,5 +1,5 @@
 ---
-title: "Linux shell基础用法"
+title: "Linux shell基础语法"
 date: 2025-05-17T23:26:43+08:00
 draft: false
 showToc: true # 显示目录

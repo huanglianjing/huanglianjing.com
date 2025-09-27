@@ -1,5 +1,5 @@
 ---
-title: "基础SQL"
+title: "SQL基础语句用法"
 date: 2021-11-07T22:49:55+08:00
 draft: false
 showToc: true # 显示目录
