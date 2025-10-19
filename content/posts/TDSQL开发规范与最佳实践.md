@@ -5,7 +5,7 @@ draft: false
 showToc: true # 显示目录
 TocOpen: true # 自动展开目录
 categories: ["数据库"]
-tags: ["关系型数据库","TDSQL"]
+tags: ["关系型数据库","分布式数据库","TDSQL"]
 ---
 
 # 1. 简介

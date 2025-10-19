@@ -5,7 +5,7 @@ draft: false
 showToc: true # 显示目录
 TocOpen: true # 自动展开目录
 categories: ["数据库"]
-tags: ["键值数据库","Redis"]
+tags: ["键值数据库","缓存数据库","Redis"]
 ---
 
 # 1. 服务架构
