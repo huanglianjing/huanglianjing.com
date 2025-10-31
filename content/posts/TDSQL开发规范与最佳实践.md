@@ -18,7 +18,7 @@ TDSQL（Tencent Distributed SQL）是腾讯打造的一款企业级数据库产�
 
 作为分布式数据库，TDSQL 将数据拆分并存储至多个节点上。节点（set、分片）是基于 MySQL 数据库主从协议联结成的一个组，是分布式实例中的最小数据单元。每个 set 内部都具有一主 N 备的高可用架构，而一个分布式实例是由 N 个 set 组成的，每个 set 存放不同范围的数据。
 
-![](https://blog-1304941664.cos.ap-guangzhou.myqcloud.com/article_material/database/tdsql_shard_table.png)
+![](https://article-1304941664.cos.ap-guangzhou.myqcloud.com/database/tdsql_shard_table.png)
 
 实例根据是否分片，分为集中式实例（no_shard），所以数据都在一个 set 上，和分布式实例（group_shard、shard），数据分布在 n 个 set 上。
 
@@ -252,5 +252,5 @@ DML 语句：
 # 4. 参考
 
 * [TDSQL MySQL版简介](https://cloud.tencent.com/document/product/557)
-* [TDSQL开发规范](https://blog-1304941664.cos.ap-guangzhou.myqcloud.com/article_material/database/TDSQL%E5%BC%80%E5%8F%91%E8%A7%84%E8%8C%83.pdf)
+* [TDSQL开发规范](https://article-1304941664.cos.ap-guangzhou.myqcloud.com/database/TDSQL%E5%BC%80%E5%8F%91%E8%A7%84%E8%8C%83.pdf)
 
