@@ -8,7 +8,18 @@ categories: ["数据库"]
 tags: ["​关系型数据库","MySQL"]
 ---
 
-# 1. 数据库性能排查
+# 1. 数据库状态
+
+查看数据库状态：
+
+```mysql
+# 显示服务器的状态变量
+SHOW STATUS;
+
+# 显示连接的概要信息
+STATUS;
+\s
+```
 
 查看执行情况：
 
@@ -32,14 +43,25 @@ SELECT * FROM information_schema.INNODB_LOCKS;
 SELECT * FROM information_schema.INNODB_LOCK_WAITS;
 ```
 
-# 2. 复制表数据
+查看表的状态：
 
-如果表的行数不多，直接用 insert select 语句复制并插入。
+```mysql
+# 查看表的更新时间
+select TABLE_SCHEMA,TABLE_NAME,TABLE_ROWS,CREATE_TIME,UPDATE_TIME from information_schema.tables where table_name like '%gdt%';
+```
+
+# 2. 数据备份和导入
+
+**一张表复制到另一张表**
+
+用 insert select 语句，可以从一张表查询结果然后插入另一张表。
 
 ```mysql
 INSERT INTO TABLE2 (col1, col2, col3)
 SELECT col1, col2, col3 FROM TABLE1 Where a > 100;
 ```
+
+**mysqldump 备份**
 
 如果表比较大，可以用 mysqldump 导出表的全部或部份数据。
 
@@ -53,13 +75,15 @@ mysqldump -h$host -P$port -u$user --add-locks=0 --no-create-info --single-transa
 SOURCE a.sql
 ```
 
-也可以导出为 csv 文件。
+**备份为 csv 文件**
+
+将查询数据导出为 csv 文件。
 
 ```mysql
 select * from db1.t where a>900 into outfile 'a.csv';
 ```
 
-然后导入 csv 文件。
+然后导入 csv 文件到表中。
 
 ```mysql
 load data infile 'a.csv' into table db2.t;
@@ -73,19 +97,19 @@ load data infile 'a.csv' into table db2.t;
 DELETE FROM user;
 ```
 
-使用 TRUNCATE 更快，因为它不记录每行的删除操作，它会删除表并重新创建回来，而不是一行行删除。这将会充值表的自增计数器，而且不能回滚。
+使用 TRUNCATE 更快，因为它不记录每行的删除操作，它会删除表并重新创建回来，而不是一行行删除。这将会重置表的自增计数器，而且不能回滚。
 
 ```mysql
 TRUNCATE TABLE user;
 ```
 
-DROP 将会删除表结构和数据。
+DROP 将会删除表结构和数据，执行速度也比较快，也是不可逆操作。
 
 ```bash
 DROP TABLE user;
 ```
 
-对服务器影响更小的方式是分批每次删除一些数据，直至表不存在数据。这种方式每次占用的锁范围更小时间也更短，串行化执行不会对服务器占用很多资源，也不会影响到其他客户端的工作。
+TRUNCATE 和 DROP 虽然执行速度快，但是持续从磁盘上删除表的数据文件，会消耗大量的 I/O 资源。对服务器影响更小的方式是分批每次删除一些数据，直至表不存在数据。这种方式每次占用的锁范围更小时间也更短，串行化执行不会对服务器占用很多资源，也不会影响到其他客户端的工作。
 
 ```mysql
 DELETE FROM user limit 100;
@@ -217,5 +241,13 @@ SHOW SLAVE STATUS;
 
 ```mysql
 UNLOCK TABLES;
+```
+
+# 6. 表的设置
+
+将表的自增id设置为指定值：
+
+```mysql
+ALTER TABLE <表> auto_increment=1;
 ```
 

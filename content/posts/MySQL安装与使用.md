@@ -10,6 +10,42 @@ tags: ["​关系型数据库","MySQL"]
 
 # 1. 安装
 
+## 1.1 在Linux安装
+
+安装 MySQL：
+
+```bash
+apt install mysql-server
+```
+
+启动服务：
+
+```bash
+systemctl start mysql
+```
+
+## 1.2 在macOS安装
+
+可以通过官网下载 MySQL 安装包安装，然后在系统设置的 MySQL 中启动服务。
+
+或者通过 brew 安装：
+
+```bash
+brew install mysql
+
+# 安装特定版本
+brew install mysql@8.0
+```
+
+启动服务：
+
+```bash
+brew services start mysql
+brew services start mysql@8.0
+```
+
+## 1.3 安装目录
+
 不同系统可以通过安装命令安装、官网下载安装包、源码编辑的方式安装 MySQL ，它们的默认安装路径如下：
 
 ```
@@ -96,6 +132,13 @@ show status like '%timeout';
 
 max-connextions 表示允许的最大客户端连接数。
 
+prompt 设置命令提示符，如 \d 为当前数据库，\h 为服务器地址，\u 为用户名。
+
+```ini
+[mysql]
+prompt='MySQL [\d]> '
+```
+
 ## 2.2 日志
 
 innodb_flush_log_at_trx_commit 设置为 1 表示每次事务的 redo log 都持久化到磁盘，建议设置成 1，保证 MySQL 异常重启后数据不丢失。
@@ -134,6 +177,14 @@ default-storage-engine 表示默认存储引擎，默认为 InnoDB。
 ## 2.5 数据
 
 datadir 指定数据目录。MySQL 的数据目录一般在安装目录的 data 目录。
+
+## 2.6 操作
+
+如果在 MySQL 客户端中 ctrl + w 删除了一行的字符而不是一个单词，在 ~/.editrc 添加：
+
+```ini
+bind "^W" ed-delete-prev-word
+```
 
 # 3. 客户端
 
