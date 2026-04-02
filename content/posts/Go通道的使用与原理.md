@@ -50,6 +50,17 @@ x, ok := <-ch // 接收，赋值变量且判断是否成功读取
 close(ch) // 关闭通道
 ```
 
+通道关闭可以通过 select 语句接收到。
+
+```go
+done := make(chan struct{})
+close(done)
+select {
+case <-done:
+	fmt.Println("done")
+}
+```
+
 通道默认可以读和写，而在传递到函数参数中时，可以限制通道在函数中是否可以读或写数据。
 
 ```go
@@ -93,6 +104,58 @@ len(ch) // 获取通道当前元素个数
 * 通道的缓冲区已满
 * 通道为nil
 
+不同操作对于不同状态的通道，将会遇到的情况如下表所示：
+
+| 操作       | 通道为nil | 已关闭通道                                       | 未关闭、非空通道 |
+| ---------- | --------- | ------------------------------------------------ | ---------------- |
+| 从通道读取 | 阻塞      | 获取一个缓冲区的值，如果取完则返回通道类型的零值 | 正常读取或阻塞   |
+| 写入通道   | 阻塞      | panic                                            | 正常写入或阻塞   |
+| 关闭通道   | panic     | panic                                            | 成功关闭         |
+
+## 1.5 无阻塞读写
+
+无论是非缓冲还是带有缓冲区的通道，在读写操作到达通道空或满时，都会阻塞住，直到有另一个协程写或者读。
+
+可以通过 select 实现非阻塞的通道读写操作。
+
+非阻塞读：
+
+```go
+func TryRead(ch chan string) (string, bool) {
+	select {
+	case str := <-ch:
+		return str, true
+	default:
+		return "", false
+	}
+}
+```
+
+非阻塞写：
+
+```go
+func TryWrite(ch chan string, str string) bool {
+	select {
+	case ch <- str:
+		return true
+	default:
+		return false
+	}
+}
+```
+
+如果向通道发送的消息是通知触发，多次通知只需要消费至少一次就够了，还可以创建一个容量为 1 的通道，然后通过非阻塞写，来优雅实现最多发送一次。
+
+```go
+ch := make(chan struct{}, 1) // 容量为 1
+for {
+	select {
+	case ch <- struct{}{}: // 尝试发送
+	default： // 通道已满时发送失败，跳过
+	}
+}
+```
+
 # 2. 实现原理
 
 ## 2.1 数据结构
@@ -116,6 +179,17 @@ type hchan struct {
 ```
 
 可以看到 go 使用一个环形队列来实现通道，通过两个下标来标记读写在环形队列中的位置，以充分利用内存。
+
+![](https://article-1304941664.cos.ap-guangzhou.myqcloud.com/go/go_channel_struct.png)
+
+等待读取和写入的协程队列结构体为 waitq，它是一个双向链表，由指向链表首个元素和最后一个元素的指针组成，而这里元素结构体 sudog 代表着在等待队列中的一个 goroutine。实际上的一个 G 可以出现在许多等待队列上，因此有可能不同的 sudog 实际是同一个 G。
+
+```go
+type waitq struct {
+	first *sudog
+	last  *sudog
+}
+```
 
 ## 2.2 创建通道
 
